@@ -1,0 +1,35 @@
+from setuptools import setup
+from glob import glob
+import os
+
+package_name = 'mini_pupper_driver'
+
+setup(
+    name=package_name,
+    version='1.0.0',
+    packages=[package_name],
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    author='MangDang',
+    author_email='fae@mangdang.net',
+    maintainer='MangDang',
+    maintainer_email='fae@mangdang.net',
+    description='Hardware driver package for Mini Pupper on ROS 2 Jazzy',
+    license='Apache-2.0',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'servo_interface = mini_pupper_driver.servo_interface:main',
+            'display_interface = mini_pupper_driver.display_interface:main',
+            'imu_interface = mini_pupper_driver.imu_interface:main',
+            'curvature_compensation = mini_pupper_driver.curvature_compensation:main',
+            'nav_vel_scaler = mini_pupper_driver.nav_vel_scaler:main',
+        ],
+    },
+)

@@ -1,0 +1,19 @@
+# Gazebo Harmonic (gz) parameters for ROS 2 Jazzy
+
+# Physics engine parameters
+physics:
+  ros__parameters:
+    publish_rate: 200.0
+
+# Gazebo Sim parameters
+gz_sim:
+  ros__parameters:
+    publish_rate: 200.0
+    # Gazebo Harmonic uses different parameter structure
+    # These are passed to the gz server
+
+# Optional: Configure physics properties
+physics_properties:
+  max_step_size: 0.001
+  real_time_factor: 1.0
+  real_time_update_rate: 1000.0
