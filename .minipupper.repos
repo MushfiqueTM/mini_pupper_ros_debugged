@@ -13,7 +13,7 @@ repositories:
   ldlidar:
     type: git
     url: https://github.com/Myzhar/ldrobot-lidar-ros2.git
-    version: main
+    version: devel  # This branch supports both Humble AND Jazzy
   
   # Alternative: Keep old driver if new one has issues
   # ldlidar_stl_ros:
