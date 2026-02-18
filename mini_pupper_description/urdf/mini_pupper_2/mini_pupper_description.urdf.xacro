@@ -1185,7 +1185,7 @@
         </noise>
       </ray>
       <!-- Gazebo Harmonic plugin name - may need adjustment based on gz_ros2_bridge -->
-      <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
+      <plugin name="gazebo_ros_lidar_controller" filename="libgz_ros_ray_sensor.so">
         <ros>
           <remapping>~/out:=/scan</remapping>
         </ros>
@@ -1197,7 +1197,7 @@
 
   <gazebo>
     <!-- Ground truth odometry plugin - verify compatibility with Gazebo Harmonic -->
-    <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
+    <plugin filename="libgz_ros_p3d.so" name="p3d_base_controller">
       <ros>
         <remapping>odom:=odom/ground_truth</remapping>
       </ros>
@@ -1235,7 +1235,7 @@
       <always_on>true</always_on>
       <update_rate>50</update_rate>
       <!-- IMU plugin - verify compatibility with Gazebo Harmonic -->
-      <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
+      <plugin name="gazebo_ros_imu_sensor" filename="libgz_ros_imu_sensor.so">
           <ros>
               <namespace>/imu</namespace>
               <remapping>~/out:=data</remapping>
@@ -1285,7 +1285,7 @@
       </camera>
 
       <!-- Gazebo ROS plugin to publish /image_raw -->
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <plugin name="camera_controller" filename="libgz_ros_camera.so">
         <always_on>true</always_on>
         <update_rate>30.0</update_rate>
         <frame_name>camera_link</frame_name>
