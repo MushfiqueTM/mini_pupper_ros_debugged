@@ -82,11 +82,16 @@ def generate_launch_description():
 
     # OPTION 2: New driver (recommended) - Default for Jazzy
     # Uses lifecycle manager for proper state management
+    # Note: The devel branch supports both Humble and Jazzy
     new_lidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             FindPackageShare('ldlidar_node'),
             '/launch/ldlidar_with_mgr.launch.py'
         ]),
+        launch_arguments={
+            'serial_port': lidar_port,
+            'lidar_model': 'LD06',
+        }.items(),
         condition=UnlessCondition(use_legacy_driver),
     )
 
