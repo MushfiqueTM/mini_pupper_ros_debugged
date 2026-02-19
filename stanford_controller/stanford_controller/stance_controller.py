@@ -33,7 +33,7 @@ class StanceController:
                 1.0
                 / self.config.z_time_constant
                 * (state.height - z),
-            ]
+            ],
         )
         delta_p = v_xy * self.config.dt
         delta_R = euler2mat(0, 0, -command.yaw_rate * self.config.dt)

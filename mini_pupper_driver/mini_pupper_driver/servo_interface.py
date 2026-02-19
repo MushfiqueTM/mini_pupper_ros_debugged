@@ -19,9 +19,9 @@
 
 import numpy as np
 import rclpy
+from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory
-from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 
 
 class ServoInterface(Node):

@@ -16,10 +16,11 @@
 # @Author  : Cullen SUN
 
 import threading
+
 import pyaudio
+import sounddevice
 from pydub import AudioSegment
 from pydub.utils import make_chunks
-import sounddevice
 
 
 class MusicPlayer:

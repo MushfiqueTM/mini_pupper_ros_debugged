@@ -1,23 +1,20 @@
+from mini_pupper_interfaces.msg import Command
+import numpy as np
 import rclpy
 from rclpy.node import Node
-from .gait_controller import GaitController
-from .stance_controller import StanceController
-from .swing_controller import SwingController
-
-from .Kinematics import four_legs_inverse_kinematics
-from .Utilities import clipped_first_order_filter
-from .Utilities import convert_to_JTP_positions
-from .State import BehaviorState, State
-
-from .Config import Configuration
-
-import numpy as np
-from transforms3d.euler import euler2mat, quat2euler
-
 from sensor_msgs.msg import Imu
 from std_msgs.msg import String
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-from mini_pupper_interfaces.msg import Command
+from transforms3d.euler import euler2mat, quat2euler
+
+from .Config import Configuration
+from .gait_controller import GaitController
+from .Kinematics import four_legs_inverse_kinematics
+from .stance_controller import StanceController
+from .State import BehaviorState, State
+from .swing_controller import SwingController
+from .Utilities import clipped_first_order_filter
+from .Utilities import convert_to_JTP_positions
 
 
 class StanfordControllerNode(Node):
@@ -45,7 +42,7 @@ class StanfordControllerNode(Node):
             "base_lf1", "lf1_lf2", "lf2_lf3",
             "base_rf1", "rf1_rf2", "rf2_rf3",
             "base_lb1", "lb1_lb2", "lb2_lb3",
-            "base_rb1", "rb1_rb2", "rb2_rb3"
+            "base_rb1", "rb1_rb2", "rb2_rb3",
         ]
         self.config = config
         self.inverse_kinematics = inverse_kinematics
@@ -80,7 +77,7 @@ class StanfordControllerNode(Node):
             Command,
             'robot_command',
             self.command_callback,
-            10
+            10,
         )
 
         if self.orientation_from_imu:
@@ -88,13 +85,13 @@ class StanfordControllerNode(Node):
                 Imu,
                 'imu/data',
                 self.imu_callback,
-                10
+                10,
             )
 
         self.joint_trajectory_publisher = self.create_publisher(
             JointTrajectory,
             'joint_group_effort_controller/joint_trajectory',
-            10
+            10,
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
 
@@ -107,7 +104,7 @@ class StanfordControllerNode(Node):
             msg.orientation.w,
             msg.orientation.x,
             msg.orientation.y,
-            msg.orientation.z
+            msg.orientation.z,
         ])
 
     def dance_active(self, command):
@@ -154,7 +151,7 @@ class StanfordControllerNode(Node):
                     swing_proportion,
                     leg_index,
                     state,
-                    command
+                    command,
                 )
             new_foot_locations[:, leg_index] = new_location
         return new_foot_locations, contact_modes
@@ -206,7 +203,7 @@ class StanfordControllerNode(Node):
             # Apply the desired body rotation
             rotated_foot_locations = (
                 euler2mat(
-                    command.roll, command.pitch, 0.0
+                    command.roll, command.pitch, 0.0,
                 )
                 @ self.state.foot_locations
             )
@@ -224,19 +221,19 @@ class StanfordControllerNode(Node):
             rotated_foot_locations = rmat.T @ rotated_foot_locations
 
             self.state.joint_angles = self.inverse_kinematics(
-                rotated_foot_locations, self.config
+                rotated_foot_locations, self.config,
             )
 
         elif self.state.behavior_state == BehaviorState.HOP:
             self.state.foot_locations = self.config.stance_at_height(-0.03)
             self.state.joint_angles = self.inverse_kinematics(
-                self.state.foot_locations, self.config
+                self.state.foot_locations, self.config,
             )
 
         elif self.state.behavior_state == BehaviorState.FINISHHOP:
             self.state.foot_locations = self.config.stance_at_height(-0.105)
             self.state.joint_angles = self.inverse_kinematics(
-                self.state.foot_locations, self.config
+                self.state.foot_locations, self.config,
             )
 
         elif self.state.behavior_state == BehaviorState.REST:
@@ -278,7 +275,7 @@ class StanfordControllerNode(Node):
                     euler2mat(
                         command.roll / 57.3,
                         command.pitch / 57.3,
-                        command.yaw / 57.3
+                        command.yaw / 57.3,
                     )
                     @ self.state.foot_locations
                 )
@@ -296,7 +293,7 @@ class StanfordControllerNode(Node):
             rotated_foot_locations = rmat.T @ rotated_foot_locations
 
             self.state.joint_angles = self.inverse_kinematics(
-                rotated_foot_locations, self.config
+                rotated_foot_locations, self.config,
             )
 
         self.state.ticks += 1
@@ -320,12 +317,12 @@ class StanfordControllerNode(Node):
         max_lim = np.array([
             [1.2, 0.6, 1, 0.5],
             [1.3, 1.3, 1.6, 1.6],
-            [0.7, 0.7, 0, 0]
+            [0.7, 0.7, 0, 0],
         ])
         min_lim = np.array([
             [-0.5, -1, -0.6, -1],
             [0, 0, -0.6, -0.6],
-            [-1.5, -1.5, -1.2, -1.2]
+            [-1.5, -1.5, -1.2, -1.2],
         ])
         return np.clip(joint_angles, min_lim, max_lim)
 

@@ -21,8 +21,8 @@ def deadband(value, band_radius):
     return max(value - band_radius, 0) + min(value + band_radius, 0)
 
 
-def clipped_first_order_filter(input, target, max_rate, tau):
-    rate = (target - input) / tau
+def clipped_first_order_filter(value, target, max_rate, tau):
+    rate = (target - value) / tau
     return np.clip(rate, -max_rate, max_rate)
 
 
@@ -48,7 +48,7 @@ def convert_to_JTP_positions(joint_angles):
         lf1_position, lf2_position, lf3_position,
         rf1_position, rf2_position, rf3_position,
         lb1_position, lb2_position, lb3_position,
-        rb1_position, rb2_position, rb3_position
+        rb1_position, rb2_position, rb3_position,
     ]
 
     return joint_positions

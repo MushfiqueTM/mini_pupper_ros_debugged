@@ -27,6 +27,6 @@ def generate_launch_description():
             executable='twist_to_command_node',
             name='twist_to_command_node',
             output='screen',
-            parameters=[]
-        )
+            parameters=[],
+        ),
     ])

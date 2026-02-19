@@ -17,7 +17,7 @@
 # limitations under the License.
 
 """
-LD06/LD19 LiDAR Launch File for ROS 2 Jazzy
+LD06/LD19 LiDAR Launch File for ROS 2 Jazzy.
 
 This launch file supports:
 - LD06 LiDAR (default)
@@ -28,7 +28,7 @@ And TWO lidar driver options:
 OPTION 1: Old driver (ldlidar_stl_ros2) - Legacy, may not work on Jazzy
   Package: ldlidar_stl_ros2
   Repo: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
-  
+
 OPTION 2: NEW driver (ldrobot-lidar-ros2) - RECOMMENDED for Jazzy
   Package: ldlidar_node
   Repo: https://github.com/Myzhar/ldrobot-lidar-ros2.git (devel branch)
@@ -42,14 +42,13 @@ Usage:
   ros2 launch mini_pupper_driver lidar_ld06.launch.py lidar_port:=/dev/ttyUSB1
 """
 
-from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
-from launch_ros.actions import Node
-from launch.actions import LogInfo, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo
 from launch.conditions import IfCondition, UnlessCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
@@ -121,7 +120,7 @@ def generate_launch_description():
         LogInfo(msg=['Using lidar port: ', lidar_port]),
         LogInfo(msg=['Using lidar model: ', lidar_model]),
         LogInfo(msg=['Using legacy driver: ', use_legacy_driver]),
-        
+
         # Launch appropriate driver based on use_legacy_driver parameter
         legacy_lidar_node,
         new_lidar_launch,

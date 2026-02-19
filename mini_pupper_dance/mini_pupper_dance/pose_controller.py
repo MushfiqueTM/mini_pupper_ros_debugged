@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+from geometry_msgs.msg import Pose
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Pose
+
 from .math_operations import euler_from_quaternion, quaternion_from_euler
 
 
@@ -23,7 +24,7 @@ class PoseController(Node):
 
         self.interpolation_timer = self.create_timer(
             timer_period,
-            self.interpolation_timer_callback
+            self.interpolation_timer_callback,
         )
 
         self.increment = 0.001  # resolution of interpolation
@@ -41,14 +42,14 @@ class PoseController(Node):
             self.pose_state.orientation.x,
             self.pose_state.orientation.y,
             self.pose_state.orientation.z,
-            self.pose_state.orientation.w
+            self.pose_state.orientation.w,
             )
 
         reference_r, reference_p, reference_y = euler_from_quaternion(
             self.pose_reference.orientation.x,
             self.pose_reference.orientation.y,
             self.pose_reference.orientation.z,
-            self.pose_reference.orientation.w
+            self.pose_reference.orientation.w,
         )
 
         if (reference_r < state_r):

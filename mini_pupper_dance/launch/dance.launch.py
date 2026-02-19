@@ -24,5 +24,5 @@ def generate_launch_description():
     return LaunchDescription([
         dance_server_node,
         dance_client_node,
-        pose_controller_node
+        pose_controller_node,
     ])

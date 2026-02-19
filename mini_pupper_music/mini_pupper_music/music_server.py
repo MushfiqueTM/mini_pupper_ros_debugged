@@ -15,12 +15,14 @@
 # limitations under the License.
 # @Author  : Cullen SUN
 
+import os
+
+from ament_index_python.packages import get_package_share_directory
+from mini_pupper_interfaces.srv import PlayMusic, StopMusic
 import rclpy
 from rclpy.node import Node
-from mini_pupper_interfaces.srv import PlayMusic, StopMusic
+
 from .music_player import MusicPlayer
-import os
-from ament_index_python.packages import get_package_share_directory
 
 
 class MusicServiceNode(Node):

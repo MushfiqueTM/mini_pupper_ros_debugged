@@ -92,6 +92,6 @@ def four_legs_inverse_kinematics(r_body_foot, config):
     for i in range(4):
         body_offset = config.LEG_ORIGINS[:, i]
         alpha[:, i] = leg_explicit_inverse_kinematics(
-            r_body_foot[:, i] - body_offset, i, config
+            r_body_foot[:, i] - body_offset, i, config,
         )
     return alpha

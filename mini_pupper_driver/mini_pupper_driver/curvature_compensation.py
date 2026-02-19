@@ -18,8 +18,8 @@
 
 
 import rclpy
-from rclpy.node import Node
 from geometry_msgs.msg import Twist
+from rclpy.node import Node
 
 
 class CurvatureCompensationNode(Node):
@@ -42,7 +42,7 @@ class CurvatureCompensationNode(Node):
         )
 
     def compensate_curvature(self, msg):
-        """Apply drift correction when moving forward"""
+        """Apply drift correction when moving forward."""
         output = Twist()
         output.linear = msg.linear
         output.angular = msg.angular

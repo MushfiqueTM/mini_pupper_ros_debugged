@@ -1,4 +1,5 @@
 from typing import Optional
+
 import numpy as np
 
 
@@ -42,7 +43,7 @@ class Configuration:
         self.dt = 0.015
         self.num_phases = 4
         self.contact_phases = np.array(
-            [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]]
+            [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]],
         )
         self.overlap_time = (
             0.09  # duration of the phase where all four feet are on the ground
@@ -73,7 +74,7 @@ class Configuration:
                 [self.LEG_FB, self.LEG_FB, -self.LEG_FB, -self.LEG_FB],
                 [-self.LEG_LR, self.LEG_LR, -self.LEG_LR, self.LEG_LR],
                 [0, 0, 0, 0],
-            ]
+            ],
         )
 
         self.ABDUCTION_OFFSETS = np.array(
@@ -82,7 +83,7 @@ class Configuration:
                 self.ABDUCTION_OFFSET,
                 -self.ABDUCTION_OFFSET,
                 self.ABDUCTION_OFFSET,
-            ]
+            ],
         )
 
         # INERTIAL
@@ -95,7 +96,7 @@ class Configuration:
         # of the carbon fiber and plastic parts of the frame and did not
         # include the hip servos and electronics
         self.FRAME_INERTIA = tuple(
-            map(lambda x: 3.0 * x, (1.844e-4, 1.254e-3, 1.337e-3))
+            map(lambda x: 3.0 * x, (1.844e-4, 1.254e-3, 1.337e-3)),
         )
         self.MODULE_INERTIA = (3.698e-5, 7.127e-6, 4.075e-5)
 
@@ -117,7 +118,7 @@ class Configuration:
                 ],
                 [-self.delta_y, self.delta_y, -self.delta_y, self.delta_y],
                 [self.z_shift, self.z_shift, self.z_shift, self.z_shift],
-            ]
+            ],
         )
 
     def stance_at_height(self, height: Optional[float] = None) -> np.ndarray:
@@ -171,7 +172,7 @@ class Configuration:
             self.overlap_ticks,
             self.swing_ticks,
             self.overlap_ticks,
-            self.swing_ticks
+            self.swing_ticks,
         ])
 
     @property

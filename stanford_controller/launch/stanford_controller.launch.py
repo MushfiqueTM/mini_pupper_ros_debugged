@@ -17,9 +17,9 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -27,21 +27,21 @@ def generate_launch_description():
     orientation_from_imu_launch_arg = DeclareLaunchArgument(
         name='orientation_from_imu',
         default_value='False',
-        description='if use imu for orientation'
+        description='if use imu for orientation',
     )
 
     publish_joint_control = LaunchConfiguration("publish_joint_control")
     publish_joint_control_launch_arg = DeclareLaunchArgument(
         name='publish_joint_control',
         default_value='False',
-        description='if publish joint control to hardware interface'
+        description='if publish joint control to hardware interface',
     )
 
     publish_states = LaunchConfiguration("publish_states")
     publish_states_launch_arg = DeclareLaunchArgument(
         name='publish_states',
         default_value='False',
-        description='if publish states out'
+        description='if publish states out',
     )
 
     return LaunchDescription([
@@ -56,7 +56,7 @@ def generate_launch_description():
             parameters=[{
                 'orientation_from_imu': orientation_from_imu,
                 'publish_joint_control': publish_joint_control,
-                'publish_states': publish_states
-            }]
-        )
+                'publish_states': publish_states,
+            }],
+        ),
     ])

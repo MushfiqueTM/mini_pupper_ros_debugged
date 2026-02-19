@@ -14,12 +14,13 @@
 # limitations under the License.
 #
 
-import rclpy
-from rclpy.node import Node
-import numpy as np
 from geometry_msgs.msg import Twist
 from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
+import numpy as np
+import rclpy
+from rclpy.node import Node
+
 from .Config import Configuration
 
 
@@ -41,7 +42,7 @@ class TwistToCommandNode(Node):
         # ROS pubs/subs
         self.publisher_ = self.create_publisher(Command, 'robot_command', 10)
         self.subscription = self.create_subscription(
-            Twist, 'cmd_vel', self.cmd_vel_callback, 10
+            Twist, 'cmd_vel', self.cmd_vel_callback, 10,
         )
 
     def cmd_vel_callback(self, twist: Twist):
@@ -63,7 +64,7 @@ class TwistToCommandNode(Node):
         cmd.legs_location = Matrix3x4(
             row1=default_stance[0].tolist(),
             row2=default_stance[1].tolist(),
-            row3=default_stance[2].tolist()
+            row3=default_stance[2].tolist(),
         )
 
         # clamp both forward and backward
@@ -98,7 +99,7 @@ class TwistToCommandNode(Node):
         return np.allclose(
             [twist.linear.x, twist.linear.y, twist.angular.z],
             0.0,
-            atol=1e-3
+            atol=1e-3,
         )
 
 
