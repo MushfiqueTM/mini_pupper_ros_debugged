@@ -127,36 +127,47 @@ Your workspace should now look like:
 
 ## A3. Fix External Dependencies (PC)
 
-### A3a. CHAMP framework — likely needs patching for Jazzy
+### A3a. CHAMP framework — disable Gazebo Classic packages
 
-The `champ` repo's `ros2` branch targets ROS 2 Humble.  It will very likely
-fail to compile on Jazzy due to deprecated `rclcpp` APIs.
+After comparing the original `mangdangroboticsclub/champ` (ros2 branch) with
+[khaledgabr77/unitree_go2_ros2](https://github.com/khaledgabr77/unitree_go2_ros2)
+(which already works on Jazzy), the core champ packages (`champ`, `champ_base`,
+`champ_msgs`) compile on Jazzy **with zero code changes**.
 
-**Steps:**
+The problem is that the champ repo also ships 5 packages with Gazebo Classic
+dependencies that don't exist on Jazzy.  We don't need any of them — Mini Pupper
+uses its own simulation setup.  The fix is to add `COLCON_IGNORE` marker files
+so colcon skips them entirely.
 
-1. Try building first (Section A5).  If `champ_base` or other champ packages
-   fail, note the specific compiler errors.
+**Run this after `vcs import` (Section A2):**
 
-2. Common fixes you'll need inside the champ source code:
-   - `rclcpp::executors::MultiThreadedExecutor` constructor signature may have
-     changed — check the error messages.
-   - `LifecycleNode` callback signatures may need `const rclcpp::Parameter &`
-     instead of raw value.
-   - Any use of `rclcpp::Time(0)` may need `rclcpp::Time(0, 0, RCL_ROS_TIME)`.
+```bash
+# Add COLCON_IGNORE to the 5 broken champ packages
+for pkg in champ_gazebo champ_description champ_bringup champ_navigation champ_config; do
+  touch ~/mini_pupper_ws/src/champ/champ/$pkg/COLCON_IGNORE
+done
+```
 
-3. **Recommended approach**: Fork `mangdangroboticsclub/champ` to your own
-   GitHub, create a `ros2-jazzy` branch, and fix the compile errors.  Then
-   update `.minipupper.repos` in mini_pupper_ros:
+This tells colcon to completely ignore those directories.  The packages you
+actually need (`champ`, `champ_base`, `champ_msgs`) will build normally.
 
-   ```yaml
-   champ/champ:
-     type: git
-     url: https://github.com/MushfiqueTM/champ.git
-     version: ros2-jazzy
-   ```
+**Verify it worked:**
 
-4. **Reference project** that has champ working on Jazzy:
-   <https://github.com/khaledgabr77/unitree_go2_ros2>
+```bash
+cd ~/mini_pupper_ws
+colcon list --packages-select champ champ_base champ_msgs
+# Should list exactly these 3 packages
+
+colcon list --packages-select champ_gazebo 2>&1
+# Should show an error or empty — the package is now ignored
+```
+
+> **Note:** The CI workflow (`industrial_ci.yml`) already handles this
+> automatically via the `BEFORE_BUILD_UPSTREAM_WORKSPACE` hook.
+
+> **Optional permanent fix:** Fork `mangdangroboticsclub/champ` to your own
+> GitHub, remove the 5 broken packages (or add COLCON_IGNORE files), and
+> update `.minipupper.repos` to point to your fork.
 
 ### A3b. LiDAR driver (Myzhar ldrobot-lidar-ros2)
 
@@ -225,7 +236,8 @@ source install/setup.bash
 |---|---|---|
 | `Cannot locate rosdep definition for [velodyne_gazebo_plugins]` | Gazebo Classic dep in champ | Add to `--skip-keys` (already done above) |
 | `Cannot locate rosdep definition for [gazebo_ros2_control]` | Gazebo Classic dep in champ | Add to `--skip-keys` (already done above) |
-| `Could not find package champ_base` | champ didn't compile | See Section A3a — fork and fix |
+| `find_package(gazebo_ros) FAILED` | champ_gazebo building | Add COLCON_IGNORE — see Section A3a |
+| `Could not find package champ_base` | champ didn't compile | Check COLCON_IGNORE didn't hit champ_base |
 | `CMake Error: cmake_minimum_required 3.16` | Old CMake | `sudo apt install cmake` |
 | `fatal error: gz/sim/...` | Missing Gazebo dev headers | `sudo apt install libgz-sim8-dev` |
 | `No module named 'MangDang'` | Hardware-only BSP package | Expected on PC — only needed on robot |
@@ -488,6 +500,12 @@ git clone -b ros2-jazzy https://github.com/MushfiqueTM/mini_pupper_ros.git
 # Import external repos
 cd mini_pupper_ros
 vcs import ~/mini_pupper_ws/src < .minipupper.repos
+
+# Disable broken Gazebo Classic champ packages (same as Section A3a)
+for pkg in champ_gazebo champ_description champ_bringup champ_navigation champ_config; do
+  touch ~/mini_pupper_ws/src/champ/champ/$pkg/COLCON_IGNORE
+done
+
 cd ~/mini_pupper_ws
 
 # Install rosdep dependencies
@@ -774,7 +792,8 @@ For your reference, all changes committed in the `ros2-jazzy` branch:
 - [ ] Workspace cloned and external repos imported via `vcs`
 - [ ] `rosdep` dependencies installed
 - [ ] Removed `planner_server_rclcpp_node` from `real_table.yaml` (Section A4)
-- [ ] `champ` packages build successfully (fork and fix if needed)
+- [ ] **COLCON_IGNORE** added to broken champ packages (Section A3a)
+- [ ] `champ`, `champ_base`, `champ_msgs` build successfully
 - [ ] `ldlidar` driver builds successfully
 - [ ] Full `colcon build` completes with zero errors
 - [ ] Simulation launches — Gazebo Harmonic GUI shows world + robot

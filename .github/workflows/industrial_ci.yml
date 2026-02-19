@@ -15,6 +15,8 @@ permissions:
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
   ROSDEP_SKIP_KEYS: champ_base champ_teleop champ_description champ_gazebo ldlidar_node ldlidar_stl_ros2 gazebo_plugins gazebo_ros gazebo_ros_pkgs gazebo_ros2_control velodyne_gazebo_plugins
+  # Skip Gazebo Classic champ packages that cannot build on Jazzy
+  BEFORE_BUILD_UPSTREAM_WORKSPACE: 'for p in champ_gazebo champ_description champ_bringup champ_navigation champ_config; do find / -maxdepth 10 -type d -name "$p" -exec touch "{}/COLCON_IGNORE" \; 2>/dev/null; done; true'
 
 jobs:
   industrial_ci:
