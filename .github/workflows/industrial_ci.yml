@@ -14,7 +14,7 @@ permissions:
 
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
-  ROSDEP_SKIP_KEYS: champ_base champ_teleop ldlidar_node ldlidar_stl_ros2
+  ROSDEP_SKIP_KEYS: champ_base champ_teleop ldlidar_node ldlidar_stl_ros2 velodyne_gazebo_plugins gazebo_ros2_control
 
 jobs:
   industrial_ci:
