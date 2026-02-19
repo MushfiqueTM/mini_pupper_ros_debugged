@@ -36,6 +36,13 @@ class NavVelScaler(Node):
         self.pub.publish(scaled)
 
 
-def main():
-    rclpy.init()
-    rclpy.spin(NavVelScaler())
+def main(args=None):
+    rclpy.init(args=args)
+    node = NavVelScaler()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()

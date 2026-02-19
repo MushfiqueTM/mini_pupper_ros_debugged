@@ -29,7 +29,7 @@
 | `docs/detailed-setup-guide.md` | Updated all Ubuntu 22.04 → 24.04, ROS Humble → Jazzy references |
 | `MIGRATION_JAZZY.md` | **NEW FILE** - Comprehensive migration guide |
 | `MIGRATION_SUMMARY.md` | **NEW FILE** - This summary document |
-
+        
 ### Package Configuration Files (13 package.xml files)
 
 | Package | Version Bump | Key Changes |

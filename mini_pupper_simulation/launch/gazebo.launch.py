@@ -16,15 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Gazebo Harmonic (gz) launch file for ROS 2 Jazzy.
-
-This replaces the legacy Gazebo Classic launch for Humble.
-"""
-
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
@@ -39,17 +32,15 @@ def generate_launch_description():
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world,
-        description='Gazebo world file path (SDF format for Gazebo Harmonic)'
+        description='Gazebo Harmonic world file path (SDF format)'
     )
 
-    # Use ros_gz_sim for Gazebo Harmonic (Jazzy)
     gz_sim_launch_path = PathJoinSubstitution([
         FindPackageShare('ros_gz_sim'),
         'launch',
         'gz_sim.launch.py'
     ])
 
-    # Gazebo Harmonic launch
     gz_sim_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gz_sim_launch_path),
         launch_arguments={

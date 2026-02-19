@@ -18,7 +18,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -26,8 +26,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     slam_package = FindPackageShare('mini_pupper_slam')
 
-    slam_config_dir = PathJoinSubstitution([slam_package, 'config'])
-    slam_config_basename = TextSubstitution(text='real_table.yaml')
+    slam_config_path = PathJoinSubstitution([slam_package, 'config', 'real_table.yaml'])
     rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -45,7 +44,7 @@ def generate_launch_description():
             name='slam_toolbox',
             output='screen',
             parameters=[
-                slam_config_dir / slam_config_basename,
+                slam_config_path,
                 {'use_sim_time': use_sim_time}
             ],
         ),

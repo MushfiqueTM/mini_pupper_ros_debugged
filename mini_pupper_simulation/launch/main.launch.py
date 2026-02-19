@@ -16,12 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Main simulation launch file for Mini Pupper using Gazebo Harmonic (gz).
-
-This has been updated for ROS 2 Jazzy compatibility.
-"""
-
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -43,7 +37,7 @@ def generate_launch_description():
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world_path,
-        description='Gazebo world path (SDF format for Gazebo Harmonic)'
+        description='Gazebo Harmonic world file path (SDF format)'
     )
 
     world_init_x = LaunchConfiguration('world_init_x')
@@ -89,7 +83,6 @@ def generate_launch_description():
         }.items()
     )
 
-    # Use ros_gz_sim create for spawning entity in Gazebo Harmonic
     spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -115,22 +108,21 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
-    # Note: champ_gazebo contact_sensor needs to be updated for Gazebo Harmonic
-    # For now, we'll skip it or use a bridge approach
-    links_map_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'config', 'champ', ROBOT_MODEL, 'links.yaml']
+    # Bridge clock, LiDAR, and IMU from Gazebo Harmonic to ROS 2
+    gz_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/lidar/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU',
+        ],
+        remappings=[
+            ('/lidar/scan', '/scan'),
+        ],
+        parameters=[{'use_sim_time': True}],
+        output='screen'
     )
-    
-    # TODO: Update contact_sensor for Gazebo Harmonic compatibility
-    # contact_sensor_launch = Node(
-    #     package='champ_gazebo',
-    #     executable='contact_sensor',
-    #     output='screen',
-    #     parameters=[
-    #         {'use_sim_time': True},
-    #         links_map_path
-    #     ]
-    # )
 
     return LaunchDescription([
         RegisterEventHandler(
@@ -146,5 +138,6 @@ def generate_launch_description():
         world_init_heading_launch_arg,
         mini_pupper_bringup_launch,
         gazebo_launch,
-        spawn_entity
+        spawn_entity,
+        gz_bridge
     ])

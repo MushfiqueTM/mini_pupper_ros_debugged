@@ -14,7 +14,7 @@ permissions:
 
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
-  ROSDEP_SKIP_KEYS: ecl_threads gazebo_ros2_control gazebo_plugins velodyne_gazebo_plugins gazebo_ros_pkgs
+  ROSDEP_SKIP_KEYS: champ_base champ_teleop ldlidar_node ldlidar_stl_ros2
 
 jobs:
   industrial_ci:
@@ -24,6 +24,6 @@ jobs:
           - { ROS_DISTRO: jazzy, ROS_REPO: ros }
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: "ros-industrial/industrial_ci@master"
         env: ${{ matrix.env }}

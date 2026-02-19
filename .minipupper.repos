@@ -7,16 +7,8 @@ repositories:
     type: git
     url: https://github.com/chvmp/champ_teleop.git
     version: ros2
-  
-  # RECOMMENDED: Use updated LD Lidar driver with Jazzy support
-  # This replaces ldlidar_stl_ros2 with a modern lifecycle-based driver
+
   ldlidar:
     type: git
     url: https://github.com/Myzhar/ldrobot-lidar-ros2.git
-    version: devel  # This branch supports both Humble AND Jazzy
-  
-  # Alternative: Keep old driver if new one has issues
-  # ldlidar_stl_ros:
-  #   type: git
-  #   url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
-  #   version: master
+    version: devel
