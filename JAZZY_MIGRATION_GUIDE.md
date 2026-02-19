@@ -207,7 +207,7 @@ cd ~/mini_pupper_ws
 
 # Install rosdep dependencies (skip packages not available for Jazzy)
 rosdep install --from-paths src --ignore-src -r -y \
-  --skip-keys="champ_base champ_teleop ldlidar_node ldlidar_stl_ros2 velodyne_gazebo_plugins gazebo_ros2_control"
+  --skip-keys="champ_base champ_teleop champ_description champ_gazebo ldlidar_node ldlidar_stl_ros2 gazebo_plugins gazebo_ros gazebo_ros_pkgs gazebo_ros2_control velodyne_gazebo_plugins"
 
 # Build incrementally — start with core packages to catch errors early
 colcon build --symlink-install --packages-up-to mini_pupper_description
@@ -492,7 +492,7 @@ cd ~/mini_pupper_ws
 
 # Install rosdep dependencies
 rosdep install --from-paths src --ignore-src -r -y \
-  --skip-keys="champ_base champ_teleop ldlidar_node ldlidar_stl_ros2 velodyne_gazebo_plugins gazebo_ros2_control"
+  --skip-keys="champ_base champ_teleop champ_description champ_gazebo ldlidar_node ldlidar_stl_ros2 gazebo_plugins gazebo_ros gazebo_ros_pkgs gazebo_ros2_control velodyne_gazebo_plugins"
 
 # Build the workspace
 colcon build --symlink-install
