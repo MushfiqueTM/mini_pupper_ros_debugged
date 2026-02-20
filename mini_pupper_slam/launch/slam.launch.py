@@ -34,7 +34,7 @@ def generate_launch_description():
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='False',
-        description='Use simulation (Gazebo) clock if true'
+        description='Use simulation (Gazebo) clock if true',
     )
 
     return LaunchDescription([
@@ -45,35 +45,35 @@ def generate_launch_description():
             name='cartographer_node',
             output='screen',
             parameters=[
-                {'use_sim_time': use_sim_time}
+                {'use_sim_time': use_sim_time},
             ],
             arguments=[
                 '-configuration_directory', cartographer_config_dir,
-                '-configuration_basename', cartographer_config_basename
+                '-configuration_basename', cartographer_config_basename,
             ],
-            remappings=[('/imu/data', 'imu')]
+            remappings=[('/imu/data', 'imu')],
         ),
         Node(
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',
             parameters=[
-                {'use_sim_time': use_sim_time}
+                {'use_sim_time': use_sim_time},
             ],
             arguments=[
                 '-resolution', '0.05',
-                '-publish_period_sec', '1.0'
-            ]
+                '-publish_period_sec', '1.0',
+            ],
         ),
         Node(
             package='rviz2',
             executable='rviz2',
             name='rviz2',
             arguments=[
-                '-d', rviz_config_file_path
+                '-d', rviz_config_file_path,
             ],
             parameters=[
-                {'use_sim_time': use_sim_time}
+                {'use_sim_time': use_sim_time},
             ],
-            output='screen'
+            output='screen',
         ),
     ])

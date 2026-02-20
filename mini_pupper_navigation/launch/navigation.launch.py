@@ -31,7 +31,7 @@ def generate_launch_description():
     default_map_path = PathJoinSubstitution([this_package, 'maps', 'map.yaml'])
     nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'mini_pupper.yaml'])
     nav2_launch_path = PathJoinSubstitution(
-        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
+        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py'],
     )
     rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
@@ -39,14 +39,14 @@ def generate_launch_description():
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='False',
-        description='Use simulation (Gazebo) clock if true'
+        description='Use simulation (Gazebo) clock if true',
     )
 
-    map = LaunchConfiguration('map')
+    map = LaunchConfiguration('map')  # noqa: A001
     map_launch_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map_path,
-        description='Full path to map file to load'
+        description='Full path to map file to load',
     )
 
     return LaunchDescription([
@@ -57,20 +57,20 @@ def generate_launch_description():
             launch_arguments={
                 'map': map,
                 'params_file': nav2_param_file_path,
-                'use_sim_time': use_sim_time
-            }.items()
+                'use_sim_time': use_sim_time,
+            }.items(),
         ),
         Node(
             package='rviz2',
             executable='rviz2',
             name='rviz2',
             arguments=[
-                '-d', rviz_config_file_path
+                '-d', rviz_config_file_path,
             ],
             parameters=[
-                {'use_sim_time': use_sim_time}
+                {'use_sim_time': use_sim_time},
             ],
-            output='screen'
+            output='screen',
         ),
         # Uncomment the following to Log map path for debugging
         # LogInfo(msg=map),

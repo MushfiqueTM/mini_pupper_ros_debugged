@@ -1,14 +1,14 @@
 import os
-import pytest
-import rclpy
 import time
+import unittest
+
 from launch import LaunchDescription
 import launch_ros.actions
-import launch_testing
-import unittest
-from std_msgs.msg import String
-
+from launch_testing.actions import ReadyToTest
 from mini_pupper_interfaces.msg import Command, Matrix3x4
+import pytest
+import rclpy
+from std_msgs.msg import String
 
 
 @pytest.mark.rostest
@@ -19,13 +19,13 @@ def generate_test_description():
         name='stanford_controller_node',
         parameters=[{
             'orientation_from_imu': False,
-            'publish_states': True
-        }]
+            'publish_states': True,
+        }],
     )
 
     return LaunchDescription([
         controller_node,
-        launch_testing.actions.ReadyToTest(),
+        ReadyToTest(),
     ])
 
 
@@ -46,7 +46,7 @@ class TestNormalCommands(unittest.TestCase):
             String,
             'state_log',
             lambda msg: self.received_states.append(msg.data),
-            10
+            10,
         )
         time.sleep(3)  # Allow time for node to initialize
 

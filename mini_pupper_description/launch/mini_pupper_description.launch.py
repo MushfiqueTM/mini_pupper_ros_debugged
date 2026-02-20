@@ -35,25 +35,27 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
+    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")  # noqa: N806
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     description_path = LaunchConfiguration("description_path")
 
     declare_use_sim_time = DeclareLaunchArgument(
         name="use_sim_time", default_value="false",
-        description="Use simulation (Gazebo) clock if true")
+        description="Use simulation (Gazebo) clock if true",
+    )
 
     default_model_path = PathJoinSubstitution([
         FindPackageShare('mini_pupper_description'),
         'urdf',
         ROBOT_MODEL,
-        'mini_pupper_description.urdf.xacro'
+        'mini_pupper_description.urdf.xacro',
     ])
 
     declare_description_path = DeclareLaunchArgument(
         name="description_path", default_value=default_model_path,
-        description="Absolute path to robot urdf file")
+        description="Absolute path to robot urdf file",
+    )
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -64,8 +66,8 @@ def generate_launch_description():
             {"use_tf_static": False},
             {"publish_frequency": 200.0},
             {"ignore_timestamp": True},
-            {'use_sim_time': use_sim_time}
-        ]
+            {'use_sim_time': use_sim_time},
+        ],
     )
 
     return LaunchDescription(
@@ -73,5 +75,5 @@ def generate_launch_description():
             declare_description_path,
             declare_use_sim_time,
             robot_state_publisher_node,
-        ]
+        ],
     )

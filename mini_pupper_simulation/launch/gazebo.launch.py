@@ -32,24 +32,24 @@ def generate_launch_description():
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world,
-        description='Gazebo Harmonic world file path (SDF format)'
+        description='Gazebo Harmonic world file path (SDF format)',
     )
 
     gz_sim_launch_path = PathJoinSubstitution([
         FindPackageShare('ros_gz_sim'),
         'launch',
-        'gz_sim.launch.py'
+        'gz_sim.launch.py',
     ])
 
     gz_sim_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gz_sim_launch_path),
         launch_arguments={
             'gz_args': ['-r -v 4 ', world],
-            'on_exit_shutdown': 'True'
-        }.items()
+            'on_exit_shutdown': 'True',
+        }.items(),
     )
 
     return LaunchDescription([
         world_launch_arg,
-        gz_sim_launch
+        gz_sim_launch,
     ])

@@ -28,38 +28,42 @@ def generate_launch_description():
 
     has_lidar = LaunchConfiguration("has_lidar")
     has_lidar_launch_arg = DeclareLaunchArgument(
-        name="has_lidar", description="if the robot has lidar sensor"
+        name="has_lidar",
+        description="if the robot has lidar sensor",
     )
 
     has_imu = LaunchConfiguration("has_imu")
     has_imu_launch_arg = DeclareLaunchArgument(
-        name="has_imu", description="if the robot has imu sensor"
+        name="has_imu",
+        description="if the robot has imu sensor",
     )
 
     has_camera = LaunchConfiguration("has_camera")
     has_camera_launch_arg = DeclareLaunchArgument(
-        name="has_camera", description="if the robot has camera module"
+        name="has_camera",
+        description="if the robot has camera module",
     )
 
     lidar_port = LaunchConfiguration("lidar_port")
     lidar_port_launch_arg = DeclareLaunchArgument(
-        name="lidar_port", description="The serial port for the lidar sensor"
+        name="lidar_port",
+        description="The serial port for the lidar sensor",
     )
 
     driver_package = FindPackageShare("mini_pupper_driver")
 
     servos_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "servo_interface.launch.py"]
+        [driver_package, "launch", "servo_interface.launch.py"],
     )
     lidar_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "lidar_ld06.launch.py"]
+        [driver_package, "launch", "lidar_ld06.launch.py"],
     )
     imu_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "imu_interface.launch.py"]
+        [driver_package, "launch", "imu_interface.launch.py"],
     )
 
     camera_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "camera.launch.py"]
+        [driver_package, "launch", "camera.launch.py"],
     )
 
     return LaunchDescription(
@@ -82,5 +86,5 @@ def generate_launch_description():
                 PythonLaunchDescriptionSource(camera_launch_path),
                 condition=IfCondition(has_camera),
             ),
-        ]
+        ],
     )

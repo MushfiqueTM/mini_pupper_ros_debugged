@@ -26,7 +26,7 @@ def generate_launch_description():
     description_package = FindPackageShare("mini_pupper_description")
 
     rviz_config_path = PathJoinSubstitution(
-        [description_package, "rviz", "urdf_viewer.rviz"]
+        [description_package, "rviz", "urdf_viewer.rviz"],
     )
 
     return LaunchDescription(
@@ -37,6 +37,6 @@ def generate_launch_description():
                 executable="rviz2",
                 name="rviz2",
                 arguments=["-d", rviz_config_path],
-            )
-        ]
+            ),
+        ],
     )

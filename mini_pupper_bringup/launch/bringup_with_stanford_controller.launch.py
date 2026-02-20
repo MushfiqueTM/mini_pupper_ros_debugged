@@ -18,7 +18,6 @@
 
 import os
 
-import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
@@ -32,6 +31,7 @@ from launch.substitutions import (
 )
 from launch_ros.actions import PushRosNamespace
 from launch_ros.substitutions import FindPackageShare
+import yaml
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
@@ -99,7 +99,7 @@ def generate_launch_description():
     )
 
     description_launch_path = PathJoinSubstitution(
-        [description_package, "launch", "mini_pupper_description.launch.py"]
+        [description_package, "launch", "mini_pupper_description.launch.py"],
     )
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
@@ -109,7 +109,7 @@ def generate_launch_description():
     )
 
     hardware_interface_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "hardware_interface.launch.py"]
+        [bringup_package, "launch", "hardware_interface.launch.py"],
     )
     hardware_interface_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(hardware_interface_launch_path),
@@ -123,7 +123,7 @@ def generate_launch_description():
     )
 
     stanford_controller_launch_path = PathJoinSubstitution(
-        [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
+        [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"],
     )
     stanford_controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stanford_controller_launch_path),

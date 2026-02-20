@@ -35,7 +35,7 @@ def generate_launch_description():
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='False',
-        description='Use simulation (Gazebo) clock if true'
+        description='Use simulation (Gazebo) clock if true',
     )
 
     nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'real_table.yaml'])
@@ -43,11 +43,11 @@ def generate_launch_description():
         source_file=nav2_param_file_path,
         root_key='',
         param_rewrites={'use_sim_time': use_sim_time},
-        convert_types=True
+        convert_types=True,
     )
 
     nav2_launch_path = PathJoinSubstitution(
-        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
+        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py'],
     )
     rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
@@ -55,7 +55,7 @@ def generate_launch_description():
     map_launch_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map_path,
-        description='Full path to map file to load'
+        description='Full path to map file to load',
     )
 
     # Scope remap to Nav2 only: cmd_vel -> cmd_vel_navigation2
@@ -67,7 +67,7 @@ def generate_launch_description():
                 'map': map_cfg,
                 'params_file': configured_params,
                 'use_sim_time': use_sim_time,
-            }.items()
+            }.items(),
         ),
     ])
 
@@ -76,7 +76,7 @@ def generate_launch_description():
         package='mini_pupper_driver',
         executable='nav_vel_scaler',
         name='nav_vel_scaler',
-        output='screen'
+        output='screen',
     )
 
     rviz = Node(
@@ -85,7 +85,7 @@ def generate_launch_description():
         name='rviz2',
         arguments=['-d', rviz_config_file_path],
         parameters=[{'use_sim_time': use_sim_time}],
-        output='screen'
+        output='screen',
     )
 
     return LaunchDescription([

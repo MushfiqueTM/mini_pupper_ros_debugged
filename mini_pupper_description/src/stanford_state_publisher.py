@@ -16,8 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
 from geometry_msgs.msg import TransformStamped
+import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from tf2_ros import TransformBroadcaster
@@ -31,7 +31,7 @@ class StanfordStatePublisher(Node):
             Imu,
             '/imu/data_filtered_madgwick',
             self.imu_callback,
-            10
+            10,
         )
 
     def imu_callback(self, msg):

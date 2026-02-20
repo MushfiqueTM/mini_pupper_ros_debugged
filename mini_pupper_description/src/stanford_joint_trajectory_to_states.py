@@ -29,7 +29,7 @@ class TrajectoryToState(Node):
             JointTrajectory,
             '/joint_group_effort_controller/joint_trajectory',
             self.joint_trajectory_callback,
-            10
+            10,
         )
         self.publisher = self.create_publisher(JointState, '/joint_states', 10)
 

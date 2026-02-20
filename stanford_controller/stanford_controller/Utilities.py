@@ -26,7 +26,7 @@ def clipped_first_order_filter(value, target, max_rate, tau):
     return np.clip(rate, -max_rate, max_rate)
 
 
-def convert_to_JTP_positions(joint_angles):
+def convert_to_JTP_positions(joint_angles):  # noqa: N802
     # Convert stanford controller joint angles to JointTrajectoryPoint
     # positions
     rf1_position = joint_angles[0, 0]

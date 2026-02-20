@@ -18,7 +18,6 @@
 
 import os
 
-import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -26,6 +25,7 @@ from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+import yaml
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
@@ -75,7 +75,7 @@ def generate_launch_description():
     )
 
     description_launch_path = PathJoinSubstitution(
-        [description_package, "launch", "mini_pupper_description.launch.py"]
+        [description_package, "launch", "mini_pupper_description.launch.py"],
     )
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
@@ -85,7 +85,7 @@ def generate_launch_description():
     )
 
     hardware_interface_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "hardware_interface.launch.py"]
+        [bringup_package, "launch", "hardware_interface.launch.py"],
     )
     hardware_interface_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(hardware_interface_launch_path),
@@ -99,7 +99,7 @@ def generate_launch_description():
     )
 
     champ_controllers_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "champ_controllers.launch.py"]
+        [bringup_package, "launch", "champ_controllers.launch.py"],
     )
     champ_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(champ_controllers_launch_path),
@@ -107,7 +107,7 @@ def generate_launch_description():
     )
 
     ekf_localization_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "ekf_localization.launch.py"]
+        [bringup_package, "launch", "ekf_localization.launch.py"],
     )
     ekf_localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ekf_localization_launch_path),
@@ -122,5 +122,5 @@ def generate_launch_description():
             hardware_interface_launch,
             champ_controllers_launch,
             ekf_localization_launch,
-        ]
+        ],
     )

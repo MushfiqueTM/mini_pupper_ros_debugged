@@ -37,50 +37,50 @@ def generate_launch_description():
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world_path,
-        description='Gazebo Harmonic world file path (SDF format)'
+        description='Gazebo Harmonic world file path (SDF format)',
     )
 
     world_init_x = LaunchConfiguration('world_init_x')
     world_init_x_launch_arg = DeclareLaunchArgument(
         name='world_init_x',
-        default_value='0.0'
+        default_value='0.0',
     )
 
     world_init_y = LaunchConfiguration('world_init_y')
     world_init_y_launch_arg = DeclareLaunchArgument(
         name='world_init_y',
-        default_value='0.0'
+        default_value='0.0',
     )
 
     world_init_z = LaunchConfiguration('world_init_z')
     world_init_z_launch_arg = DeclareLaunchArgument(
         name='world_init_z',
-        default_value='0.066'
+        default_value='0.066',
     )
 
     world_init_heading = LaunchConfiguration('world_init_heading')
     world_init_heading_launch_arg = DeclareLaunchArgument(
         name='world_init_heading',
-        default_value='0.0'
+        default_value='0.0',
     )
 
     bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_bringup'), 'launch', 'bringup.launch.py']
+        [FindPackageShare('mini_pupper_bringup'), 'launch', 'bringup.launch.py'],
     )
     mini_pupper_bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(bringup_launch_path),
         launch_arguments={
             'use_sim_time': 'True',
-            'hardware_connected': 'False'
-        }.items()
+            'hardware_connected': 'False',
+        }.items(),
     )
 
     gazebo_launch_path = PathJoinSubstitution([this_package, 'launch', 'gazebo.launch.py'])
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'world': world
-        }.items()
+            'world': world,
+        }.items(),
     )
 
     spawn_entity = Node(
@@ -94,18 +94,18 @@ def generate_launch_description():
             '-z', world_init_z,
             '-R', '0',
             '-P', '0',
-            '-Y', world_init_heading
+            '-Y', world_init_heading,
         ],
-        output='screen'
+        output='screen',
     )
 
     ros2_controllers_launch_path = PathJoinSubstitution([
         this_package,
         'launch',
-        'ros2_controllers.launch.py'
+        'ros2_controllers.launch.py',
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path),
     )
 
     # Bridge clock, LiDAR, and IMU from Gazebo Harmonic to ROS 2
@@ -121,15 +121,15 @@ def generate_launch_description():
             ('/lidar/scan', '/scan'),
         ],
         parameters=[{'use_sim_time': True}],
-        output='screen'
+        output='screen',
     )
 
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=spawn_entity,
-                on_exit=[ros2_controllers_launch]
-            )
+                on_exit=[ros2_controllers_launch],
+            ),
         ),
         world_launch_arg,
         world_init_x_launch_arg,
@@ -139,5 +139,5 @@ def generate_launch_description():
         mini_pupper_bringup_launch,
         gazebo_launch,
         spawn_entity,
-        gz_bridge
+        gz_bridge,
     ])

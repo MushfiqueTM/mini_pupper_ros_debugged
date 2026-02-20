@@ -27,10 +27,10 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     champ_base_package = FindPackageShare("champ_base")
     base_to_footprint_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, "config", "ekf", "base_to_footprint.yaml"]
+        [champ_base_package, "config", "ekf", "base_to_footprint.yaml"],
     )
     footprint_to_odom_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, "config", "ekf", "footprint_to_odom.yaml"]
+        [champ_base_package, "config", "ekf", "footprint_to_odom.yaml"],
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -67,5 +67,5 @@ def generate_launch_description():
     )
 
     return LaunchDescription(
-        [use_sim_time_launch_arg, base_to_footprint_ekf, footprint_to_odom_ekf]
+        [use_sim_time_launch_arg, base_to_footprint_ekf, footprint_to_odom_ekf],
     )

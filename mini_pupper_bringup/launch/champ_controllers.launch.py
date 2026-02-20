@@ -32,17 +32,17 @@ def generate_launch_description():
     description_package = FindPackageShare("mini_pupper_description")
 
     description_path = PathJoinSubstitution(
-        [description_package, "urdf", ROBOT_MODEL, "mini_pupper_description.urdf.xacro"]
+        [description_package, "urdf", ROBOT_MODEL, "mini_pupper_description.urdf.xacro"],
     )
 
     joints_config_path = PathJoinSubstitution(
-        [description_package, "config", "champ", ROBOT_MODEL, "joints.yaml"]
+        [description_package, "config", "champ", ROBOT_MODEL, "joints.yaml"],
     )
     links_config_path = PathJoinSubstitution(
-        [description_package, "config", "champ", ROBOT_MODEL, "links.yaml"]
+        [description_package, "config", "champ", ROBOT_MODEL, "links.yaml"],
     )
     gait_config_path = PathJoinSubstitution(
-        [description_package, "config", "champ", ROBOT_MODEL, "gait.yaml"]
+        [description_package, "config", "champ", ROBOT_MODEL, "gait.yaml"],
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -54,7 +54,8 @@ def generate_launch_description():
 
     has_imu = LaunchConfiguration("has_imu")
     has_imu_launch_arg = DeclareLaunchArgument(
-        name="has_imu", description="if the robot has imu sensor"
+        name="has_imu",
+        description="if the robot has imu sensor",
     )
 
     drift_correction_launch_arg = DeclareLaunchArgument(
@@ -71,7 +72,7 @@ def generate_launch_description():
         executable="curvature_compensation",
         name="drift_compensation",
         parameters=[
-            {"drift_correction": drift_correction, "use_sim_time": use_sim_time}
+            {"drift_correction": drift_correction, "use_sim_time": use_sim_time},
         ],
         output="screen",
     )
@@ -87,7 +88,7 @@ def generate_launch_description():
             {"publish_joint_control": True},
             {"publish_foot_contacts": True},
             {
-                "joint_controller_topic": "joint_group_effort_controller/joint_trajectory"
+                "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
             },
             {"urdf": Command(["xacro ", description_path])},
             joints_config_path,
@@ -119,5 +120,5 @@ def generate_launch_description():
             drift_corrector,
             quadruped_controller,
             state_estimator,
-        ]
+        ],
     )

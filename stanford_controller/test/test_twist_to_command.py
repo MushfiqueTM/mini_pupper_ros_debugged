@@ -1,13 +1,13 @@
 import time
 import unittest
 
-import pytest
-import rclpy
 from geometry_msgs.msg import Twist
-from mini_pupper_interfaces.msg import Command
 from launch import LaunchDescription
 import launch_ros.actions
 import launch_testing
+from mini_pupper_interfaces.msg import Command
+import pytest
+import rclpy
 
 
 @pytest.mark.rostest
@@ -42,7 +42,7 @@ class TestTwistToCommandNode(unittest.TestCase):
             Command,
             'robot_command',
             lambda msg: self.received_cmds.append(msg),
-            10
+            10,
         )
 
         # wait for connections

@@ -23,10 +23,10 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
     (x, y, z) = r_body_foot
 
     # Distance from the leg origin to the foot, projected into the y-z plane
-    R_body_foot_yz = (y ** 2 + z ** 2) ** 0.5
+    R_body_foot_yz = (y ** 2 + z ** 2) ** 0.5  # noqa: N806
 
     # Distance from the leg's forward/back point of rotation to the foot
-    R_hip_foot_yz = (R_body_foot_yz ** 2 - config.ABDUCTION_OFFSET ** 2) ** 0.5
+    R_hip_foot_yz = (R_body_foot_yz ** 2 - config.ABDUCTION_OFFSET ** 2) ** 0.5  # noqa: N806
 
     # Interior angle of the right triangle formed in the y-z plane by the leg
     # that is coincident to the ab/adduction axis
@@ -48,7 +48,7 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
     theta = np.arctan2(-x, R_hip_foot_yz)
 
     # Distance between the hip and foot
-    R_hip_foot = (R_hip_foot_yz ** 2 + x ** 2) ** 0.5
+    R_hip_foot = (R_hip_foot_yz ** 2 + x ** 2) ** 0.5  # noqa: N806
 
     # Angle between the line going from hip to foot and the link L1
     arccos_argument = (

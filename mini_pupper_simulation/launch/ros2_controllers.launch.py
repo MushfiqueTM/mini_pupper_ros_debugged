@@ -33,9 +33,9 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "joint_state_broadcaster",
-            "--controller-manager-timeout", "30"
+            "--controller-manager-timeout", "30",
         ],
-        output='screen'
+        output='screen',
     )
 
     joint_group_effort_controller_spawner = Node(
@@ -43,12 +43,12 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "joint_group_effort_controller",
-            "--controller-manager-timeout", "30"
+            "--controller-manager-timeout", "30",
         ],
-        output='screen'
+        output='screen',
     )
 
     return LaunchDescription([
         joint_state_broadcaster_spawner,
-        joint_group_effort_controller_spawner
+        joint_group_effort_controller_spawner,
     ])
