@@ -34,7 +34,7 @@ class MovementGroups:
             [[0.06, -0.05, -0.07]],
             [[0.06, 0.05, -0.07]],
             [[-0.06, -0.05, -0.07]],
-            [[-0.06, 0.05, -0.07]]
+            [[-0.06, 0.05, -0.07]],
         ]
 
         # time of an excecution interval
@@ -51,7 +51,7 @@ class MovementGroups:
         self.legliftcap = 0.06
 
     def cap_limit(self, MAX, MIN, value):
-        """define the movement limit to make sure motors' safety"""
+        """Define the movement limit to make sure motors' safety."""
         if value > MAX:
             num_modified = MAX
         elif value < MIN:
@@ -63,11 +63,13 @@ class MovementGroups:
     # ######### The level1 simple APIs without input parameters ##########
 
     def stop(self, time=1):
-        """Return to the default natural standing position
+        """Return to the default natural standing position.
+
         Args:
             time: let the robot be still in the defaut state for a certain period (unit: second)
+
         Returns:
-        	Append the default standing position into MovementLib
+            Append the default standing position into MovementLib.
         """
         if time <= 0:
             time = self.dt
@@ -84,8 +86,9 @@ class MovementGroups:
 
     def look_up(self):
         """Set robot look up 20deg, you can change the deg parameter in this function.
+
         Returns:
-        	Append the look up movement into MovementLib
+            Append the look up movement into MovementLib.
         """
         dance_scheme = Movements('look_up')
         dance_all_legs = self.default_stand
@@ -97,8 +100,9 @@ class MovementGroups:
 
     def look_down(self):
         """Set robot look down 20deg, you can change the deg parameter in this function.
+
         Returns:
-        	Append the look down movement into MovementLib
+            Append the look down movement into MovementLib.
         """
         dance_scheme = Movements('look_down')
         dance_all_legs = self.default_stand
@@ -110,8 +114,9 @@ class MovementGroups:
 
     def look_right(self):
         """Set robot look right 30deg, you can change the deg parameter in this function.
+
         Returns:
-        	Append the look right movement into MovementLib
+            Append the look right movement into MovementLib.
         """
         dance_scheme = Movements('look_right')
         dance_all_legs = self.default_stand
@@ -123,8 +128,9 @@ class MovementGroups:
 
     def look_left(self):
         """Set robot look left 30deg, you can change the deg parameter in this function.
+
         Returns:
-        	Append the look left movement into MovementLib
+            Append the look left movement into MovementLib.
         """
         dance_scheme = Movements('look_left')
         dance_all_legs = self.default_stand
@@ -136,8 +142,9 @@ class MovementGroups:
 
     def look_upperleft(self):
         """Set robot look up 20deg and look left 30deg, you can change the deg parameter.
+
         Returns:
-        	Append the look upperleft movement into MovementLib
+            Append the look upperleft movement into MovementLib.
         """
         dance_scheme = Movements('look_upperleft')
         dance_all_legs = self.default_stand
@@ -149,8 +156,9 @@ class MovementGroups:
 
     def look_upperright(self):
         """Set robot look up 20deg and look right 30deg, you can change the deg parameter.
+
         Returns:
-        	Append the look upperright movement into MovementLib
+            Append the look upperright movement into MovementLib.
         """
         dance_scheme = Movements('look_upperright')
         dance_all_legs = self.default_stand
@@ -162,8 +170,9 @@ class MovementGroups:
 
     def look_rightlower(self):
         """Set robot look down 20deg and look right 30deg, you can change the deg parameter.
+
         Returns:
-        	Append the look rightlower movement into MovementLib
+            Append the look rightlower movement into MovementLib.
         """
         dance_scheme = Movements('look_rightlower')
         dance_all_legs = self.default_stand
@@ -175,8 +184,9 @@ class MovementGroups:
 
     def look_leftlower(self):
         """Set robot look down 20deg and look left 30deg, you can change the deg parameter.
+
         Returns:
-        	Append the look leftlower movement into MovementLib
+            Append the look leftlower movement into MovementLib.
         """
         dance_scheme = Movements('look_leftlower')
         dance_all_legs = self.default_stand
@@ -188,8 +198,9 @@ class MovementGroups:
 
     def move_forward(self):
         """Set robot move forward as 0.15m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move forward movement into MovementLib
+            Append the move forward movement into MovementLib.
         """
         dance_scheme = Movements('move_forward')
         dance_all_legs = self.default_stand
@@ -201,8 +212,9 @@ class MovementGroups:
 
     def move_backward(self):
         """Set robot move backward as 0.15m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move backward movement into MovementLib
+            Append the move backward movement into MovementLib.
         """
         dance_scheme = Movements('move_backward')
         dance_all_legs = self.default_stand
@@ -214,8 +226,9 @@ class MovementGroups:
 
     def move_right(self):
         """Set robot move right as 0.15m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move right movement into MovementLib
+            Append the move right movement into MovementLib.
         """
         dance_scheme = Movements('move_right')
         dance_all_legs = self.default_stand
@@ -227,8 +240,9 @@ class MovementGroups:
 
     def move_left(self):
         """Set robot move left as 0.15m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move left movement into MovementLib
+            Append the move left movement into MovementLib.
         """
         dance_scheme = Movements('move_left')
         dance_all_legs = self.default_stand
@@ -240,8 +254,9 @@ class MovementGroups:
 
     def move_leftfront(self):
         """Set robot move leftfront as 0.15*sqrt(2)m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move leftfront movement into MovementLib
+            Append the move leftfront movement into MovementLib.
         """
         dance_scheme = Movements('move_leftfront')
         dance_all_legs = self.default_stand
@@ -253,8 +268,9 @@ class MovementGroups:
 
     def move_rightfront(self):
         """Set robot move rightfront as 0.15*sqrt(2)m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move rightfront movement into MovementLib
+            Append the move rightfront movement into MovementLib.
         """
         dance_scheme = Movements('move_rightfront')
         dance_all_legs = self.default_stand
@@ -266,8 +282,9 @@ class MovementGroups:
 
     def move_leftback(self):
         """Set robot move leftback as 0.15*sqrt(2)m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move leftback movement into MovementLib
+            Append the move leftback movement into MovementLib.
         """
         dance_scheme = Movements('move_leftback')
         dance_all_legs = self.default_stand
@@ -279,8 +296,9 @@ class MovementGroups:
 
     def move_rightback(self):
         """Set robot move rightback as 0.15*sqrt(2)m/s, you can change the velocity parameter.
+
         Returns:
-        	Append the move rightback movement into MovementLib
+            Append the move rightback movement into MovementLib.
         """
         dance_scheme = Movements('move_rightback')
         dance_all_legs = self.default_stand
@@ -295,7 +313,8 @@ class MovementGroups:
     # ######### The level2 APIs with input parameters ##########
 
     def head_move(self, pitch_deg=0, yaw_deg=0, time_uni=1, time_acc=1):
-        """Turn the head of the robot to a certain degree
+        """Turn the head of the robot to a certain degree.
+
         Args:
             Pitch_deg: the angle you want the robot's head to look up or down
                         e.g. 20 ----> the pupper will lookup 20 degrees
@@ -322,7 +341,7 @@ class MovementGroups:
         dance_speed = [[0, 0, 0]]
         dance_attitude = [
             [0, modified_pitch, modified_yaw],
-            [0, modified_pitch, modified_yaw]
+            [0, modified_pitch, modified_yaw],
         ]
         dance_scheme.setInterpolationNumber(interval_uni)
         dance_scheme.setTransitionTic(interval_acc)
@@ -332,7 +351,8 @@ class MovementGroups:
         return self.MovementLib
 
     def body_row(self, row_deg=0, time_uni=1, time_acc=1):
-        """Set the robot to tilt its body to a certain angle
+        """Set the robot to tilt its body to a certain angle.
+
         Args:
             row_deg: the desired angle you want the robot to tilt
                     e.g. 10 ----> the pupper will tilt 10 degrees counterclockwise
@@ -360,7 +380,8 @@ class MovementGroups:
         return self.MovementLib
 
     def gait_uni(self, v_x=0, v_y=0, time_uni=1, time_acc=1):
-        """Let robot gait uniformly for a given time
+        """Let robot gait uniformly for a given time.
+
         Args:
             v_x: the desired forward/back velocity (unit: m/s)
             v_y: the desired left/right velocity (unit: m/s)
@@ -381,7 +402,7 @@ class MovementGroups:
         dance_all_legs = self.default_stand
         dance_speed = [
             [modified_vx, modified_vy, 0],
-            [modified_vx, modified_vy, 0]
+            [modified_vx, modified_vy, 0],
         ]
         dance_attitude = [[0, 0, 0]]
         dance_scheme.setInterpolationNumber(interval_uni)
@@ -392,7 +413,8 @@ class MovementGroups:
         return self.MovementLib
 
     def height_move(self, ht=0, time_uni=1, time_acc=1):
-        """Let robot descend or ascend a given height
+        """Let robot descend or ascend a given height.
+
         Args:
             ht: the distance you want the robot to ascend or descend
                 e.g. ht = 0.02 ----> let pupper ascend 0.02m
@@ -417,7 +439,7 @@ class MovementGroups:
             [[-0.06, -0.05, -0.07 - modified_ht],
              [-0.06, -0.05, -0.07 - modified_ht]],
             [[-0.06, 0.05, -0.07 - modified_ht],
-             [-0.06, 0.05, -0.07 - modified_ht]]
+             [-0.06, 0.05, -0.07 - modified_ht]],
         ]
         dance_speed = [[0, 0, 0]]
         dance_attitude = [[0, 0, 0]]
@@ -430,7 +452,8 @@ class MovementGroups:
 
     def foreleg_lift(self, leg_index='left', ht=0.01,
                      time_uni=1, time_acc=1):
-        """lift one foreleg by a certain height
+        """Lift one foreleg by a certain height.
+
         Args:
             ht: the height you want the leg to lift by
                 e.g. ht = 0.02 ----> lift up the leg by 0.02m
@@ -454,14 +477,14 @@ class MovementGroups:
              [0.12, -0.06, -0.07 + modified_ht]],
             [[0.06, 0.01, -0.07], [0.06, 0.01, -0.07]],
             [[-0.06, -0.05, -0.09], [-0.06, -0.05, -0.09]],
-            [[-0.06, 0.05, -0.07], [-0.06, 0.05, -0.07]]
+            [[-0.06, 0.05, -0.07], [-0.06, 0.05, -0.07]],
         ]
         leg_2 = [
             [[0.06, -0.01, -0.07], [0.06, -0.01, -0.07]],
             [[0.12, 0.06, -0.07 + modified_ht],
              [0.12, 0.06, -0.07 + modified_ht]],
             [[-0.06, -0.05, -0.07], [-0.06, -0.05, -0.07]],
-            [[-0.06, 0.05, -0.09], [-0.06, 0.05, -0.09]]
+            [[-0.06, 0.05, -0.09], [-0.06, 0.05, -0.09]],
         ]
         if leg_index == 'right':
             dance_all_legs = leg_1
@@ -478,7 +501,8 @@ class MovementGroups:
 
     def backleg_lift(self, leg_index='left', ht=0.01,
                      time_uni=1, time_acc=1):
-        """lift one backleg by a certain height
+        """Lift one backleg by a certain height.
+
         Args:
             ht: the height you wan the leg to lift by
                 e.g. ht = 0.02 ----> lift up the leg by 0.02m
@@ -502,14 +526,14 @@ class MovementGroups:
             [[0.06, 0.05, -0.07], [0.06, 0.05, -0.07]],
             [[-0.08, -0.08, -0.07 + modified_ht],
              [-0.08, -0.08, -0.07 + modified_ht]],
-            [[-0.06, 0.01, -0.07], [-0.06, 0.01, -0.07]]
+            [[-0.06, 0.01, -0.07], [-0.06, 0.01, -0.07]],
         ]
         leg_2 = [
             [[0.06, -0.05, -0.07], [0.06, -0.05, -0.07]],
             [[0.06, 0.05, -0.09], [0.06, 0.05, -0.09]],
             [[-0.06, -0.01, -0.07], [-0.06, -0.01, -0.07]],
             [[-0.08, 0.08, -0.07 + modified_ht],
-             [-0.08, 0.08, -0.07 + modified_ht]]
+             [-0.08, 0.08, -0.07 + modified_ht]],
         ]
         if leg_index == 'right':
             dance_all_legs = leg_1
@@ -525,9 +549,10 @@ class MovementGroups:
         return self.MovementLib
 
     def rotate(self, angle=1):
-        """This movement enables the pupper to rotate around its body center
-        in the x-y plane.
-            Params:Radius: the angle of rotation in degree
+        """Rotate the pupper around its body center in the x-y plane.
+
+        Args:
+            angle: the angle of rotation in degree.
         """
         m = 1
         if angle >= 0:
@@ -551,13 +576,11 @@ class MovementGroups:
         return self.MovementLib
 
     def bowback(self, angle):
-        """This movement enables the pupper to bow its head and move backwards.
-        """
+        """Bow the pupper's head and move backwards."""
         modified_angle = self.cap_limit(30, 0, angle)
         dance_scheme = Movements('bowback')
         dance_all_legs = self.default_stand
         dance_speed = [[-0.1, 0, 0]]
-        dance_attitude = [[0, 0, 0]]
         dance_scheme.setInterpolationNumber(20)
         dance_scheme.setLegsSequence(dance_all_legs)
         dance_scheme.setAttitudeSequence(
@@ -580,11 +603,10 @@ class MovementGroups:
     modify them on your own."""
 
     def body_cycle(self):
-        """This movement enables the pupper to draw a circle with
-        it's body center in the x-y plane while keeping
-        it's origional orientation of the body.
+        """Draw a circle with the body center in the x-y plane.
+
         Params:
-            Radius: the radius of the circle trajectory (unit: meter)
+            Radius: the radius of the circle trajectory (unit: meter).
         """
         dance_scheme = Movements('body_cycle')
         Radius = 0.04
@@ -755,10 +777,10 @@ class MovementGroups:
         return self.MovementLib
 
     def head_ellipse(self):
-        """This movement enables the pupper to draw an ellipse-shaped
-        trajectory with it's head by edting the orientations of
-        the body. The maximum pitching angle is 1/9 pi and the
-        maximum yawing angle is 1/6 pi
+        """Draw an ellipse-shaped trajectory with the head.
+
+        The maximum pitching angle is 1/9 pi and the
+        maximum yawing angle is 1/6 pi.
         """
         dance_scheme = Movements('head_ellipse')
 

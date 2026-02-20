@@ -20,9 +20,6 @@ import os
 
 import yaml
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.actions import PushRosNamespace
-from launch_ros.substitutions import FindPackageShare
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.conditions import IfCondition, UnlessCondition
@@ -33,6 +30,8 @@ from launch.substitutions import (
     PathJoinSubstitution,
     TextSubstitution,
 )
+from launch_ros.actions import PushRosNamespace
+from launch_ros.substitutions import FindPackageShare
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 

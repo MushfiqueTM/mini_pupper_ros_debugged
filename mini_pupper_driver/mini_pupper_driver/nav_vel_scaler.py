@@ -17,8 +17,8 @@
 # limitations under the License.
 
 
-import rclpy
 from geometry_msgs.msg import Twist
+import rclpy
 from rclpy.node import Node
 
 

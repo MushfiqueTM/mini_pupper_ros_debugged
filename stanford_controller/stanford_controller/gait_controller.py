@@ -50,8 +50,10 @@ class GaitController:
         for i in range(self.config.num_phases):
             phase_sum += self.config.phase_ticks[i]
             if phase_time < phase_sum:
-                subphase_ticks = phase_time - \
-                    phase_sum + self.config.phase_ticks[i]
+                subphase_ticks = (
+                    phase_time
+                    - phase_sum + self.config.phase_ticks[i]
+                )
                 return subphase_ticks
         assert False
 

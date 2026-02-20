@@ -30,8 +30,10 @@ class SwingController:
             if swing_phase < 0.5:
                 swing_height_ = swing_phase / 0.5 * self.config.z_clearance
             else:
-                swing_height_ = self.config.z_clearance * \
-                    (1 - (swing_phase - 0.5) / 0.5)
+                swing_height_ = (
+                    self.config.z_clearance
+                    * (1 - (swing_phase - 0.5) / 0.5)
+                )
         return swing_height_
 
     def next_foot_location(
@@ -46,11 +48,17 @@ class SwingController:
         swing_height_ = self.swing_height(swing_prop)
         touchdown_location = self.raibert_touchdown_location(
             leg_index, command)
-        time_left = self.config.dt * \
-            self.config.swing_ticks * (1.0 - swing_prop)
-        v = (touchdown_location - foot_location) / \
-            time_left * np.array([1, 1, 0])
+        time_left = (
+            self.config.dt
+            * self.config.swing_ticks * (1.0 - swing_prop)
+        )
+        v = (
+            (touchdown_location - foot_location)
+            / time_left * np.array([1, 1, 0])
+        )
         delta_foot_location = v * self.config.dt
         z_vector = np.array([0, 0, swing_height_ + command.height])
-        return foot_location * \
-            np.array([1, 1, 0]) + z_vector + delta_foot_location
+        return (
+            foot_location * np.array([1, 1, 0])
+            + z_vector + delta_foot_location
+        )

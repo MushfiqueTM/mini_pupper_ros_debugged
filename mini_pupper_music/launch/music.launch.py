@@ -27,5 +27,5 @@ def generate_launch_description():
         name="music_server",
     )
     return LaunchDescription([
-        music_server_node
+        music_server_node,
     ])

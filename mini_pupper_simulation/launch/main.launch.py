@@ -17,14 +17,14 @@
 # limitations under the License.
 
 import os
+
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
-from launch.actions import RegisterEventHandler
-from launch.event_handlers import OnProcessExit
+from launch_ros.substitutions import FindPackageShare
 
 ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
 

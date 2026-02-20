@@ -28,6 +28,6 @@ def generate_launch_description():
             package='mini_pupper_driver',
             executable='imu_interface',
             name='imu_interface',
-            output='screen'
-        )
+            output='screen',
+        ),
     ])

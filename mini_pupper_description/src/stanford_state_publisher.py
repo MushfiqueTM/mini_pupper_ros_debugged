@@ -17,10 +17,10 @@
 # limitations under the License.
 
 import rclpy
+from geometry_msgs.msg import TransformStamped
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from tf2_ros import TransformBroadcaster
-from geometry_msgs.msg import TransformStamped
 
 
 class StanfordStatePublisher(Node):

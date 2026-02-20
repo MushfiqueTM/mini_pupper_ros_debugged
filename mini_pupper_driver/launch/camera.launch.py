@@ -29,7 +29,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'output_encoding',
             default_value='yuv422_yuy2',
-            description='Output encoding for the camera'
+            description='Output encoding for the camera',
         ),
         Node(
             package='v4l2_camera',

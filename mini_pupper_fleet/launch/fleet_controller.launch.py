@@ -35,7 +35,7 @@ def _launch_nodes(context, *args, **kwargs):
             name="fleet_controller_node",
             output="screen",
             parameters=[{"robot_count": count}],
-        )
+        ),
     )
 
     # Always launch with namespaces (fleet architecture)
@@ -48,7 +48,7 @@ def _launch_nodes(context, *args, **kwargs):
                 name="imu_ekf_node",
                 namespace=f"robot{i}",
                 output="screen",
-            )
+            ),
         )
 
         nodes.append(
@@ -58,7 +58,7 @@ def _launch_nodes(context, *args, **kwargs):
                 name="robot_behaviour_node",
                 namespace=f"robot{i}",
                 output="screen",
-            )
+            ),
         )
 
     return nodes
@@ -73,5 +73,5 @@ def generate_launch_description():
                 description="Number of robots in the fleet",
             ),
             OpaqueFunction(function=_launch_nodes),
-        ]
+        ],
     )

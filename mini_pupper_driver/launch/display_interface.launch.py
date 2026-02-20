@@ -26,6 +26,6 @@ def generate_launch_description():
             package='mini_pupper_driver',
             executable='display_interface',
             name='display_interface',
-            output='screen'
-        )
+            output='screen',
+        ),
     ])

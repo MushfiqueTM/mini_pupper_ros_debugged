@@ -32,12 +32,12 @@ class MusicServiceNode(Node):
         self.play_service = self.create_service(
             PlayMusic,
             'play_music',
-            self.play_music_callback
+            self.play_music_callback,
         )
         self.stop_service = self.create_service(
             StopMusic,
             'stop_music',
-            self.stop_music_callback
+            self.stop_music_callback,
         )
 
     def play_music_callback(self, request, response):

@@ -212,10 +212,12 @@ class StanfordControllerNode(Node):
             (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
             correction_factor = 0.8
             max_tilt = 0.4
-            roll_compensation = correction_factor * \
-                np.clip(-roll, -max_tilt, max_tilt)
-            pitch_compensation = correction_factor * \
-                np.clip(-pitch, -max_tilt, max_tilt)
+            roll_compensation = (
+                correction_factor * np.clip(-roll, -max_tilt, max_tilt)
+            )
+            pitch_compensation = (
+                correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            )
             rmat = euler2mat(roll_compensation, pitch_compensation, 0)
 
             rotated_foot_locations = rmat.T @ rotated_foot_locations
@@ -264,12 +266,16 @@ class StanfordControllerNode(Node):
                 )
             else:
                 location_buf = self.get_2d_foot_locations(command)
-                if (abs(command.horizontal_velocity[0]) < 0.01) and \
-                    (abs(command.horizontal_velocity[1]) < 0.01 and
-                        abs(command.yaw_rate == 0)):
+                if (
+                    abs(command.horizontal_velocity[0]) < 0.01
+                    and abs(command.horizontal_velocity[1]) < 0.01
+                    and abs(command.yaw_rate == 0)
+                ):
                     self.state.foot_locations = location_buf
                 else:
-                    self.state.foot_locations, contact_modes = self.step_gait(self.state, command)
+                    self.state.foot_locations, contact_modes = (
+                        self.step_gait(self.state, command)
+                    )
 
                 rotated_foot_locations = (
                     euler2mat(
@@ -284,10 +290,12 @@ class StanfordControllerNode(Node):
             (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
             correction_factor = 0.8
             max_tilt = 0.4
-            roll_compensation = correction_factor * \
-                np.clip(-roll, -max_tilt, max_tilt)
-            pitch_compensation = correction_factor * \
-                np.clip(-pitch, -max_tilt, max_tilt)
+            roll_compensation = (
+                correction_factor * np.clip(-roll, -max_tilt, max_tilt)
+            )
+            pitch_compensation = (
+                correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            )
             rmat = euler2mat(roll_compensation, pitch_compensation, 0)
 
             rotated_foot_locations = rmat.T @ rotated_foot_locations

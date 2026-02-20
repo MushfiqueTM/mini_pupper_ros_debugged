@@ -18,8 +18,8 @@
 
 import rclpy
 from rclpy.node import Node
-from trajectory_msgs.msg import JointTrajectory
 from sensor_msgs.msg import JointState
+from trajectory_msgs.msg import JointTrajectory
 
 
 class TrajectoryToState(Node):

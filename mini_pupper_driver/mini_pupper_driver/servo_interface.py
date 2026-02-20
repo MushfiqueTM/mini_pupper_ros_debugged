@@ -17,9 +17,9 @@
 # limitations under the License.
 # @Author  : Zhengxiao Han
 
+from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 import numpy as np
 import rclpy
-from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory
 
@@ -51,7 +51,8 @@ class ServoInterface(Node):
             [rf1_position, lf1_position, rb1_position, lb1_position],
             [rf2_position, lf2_position, rb2_position, lb2_position],
             [rf2_position + rf3_position, lf2_position + lf3_position,
-             rb2_position + rb3_position, lb2_position + lb3_position]
+             rb2_position + rb3_position, lb2_position + lb3_position,
+             ],
         ])
         self.hardware_interface.set_actuator_postions(joint_angles)
 

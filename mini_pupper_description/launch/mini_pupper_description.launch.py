@@ -22,16 +22,15 @@
 #
 # Copyright (c) 2019-2020 Juan Miguel Jimeno
 #
-# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_description/launch/description.launch.py
+# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_description/launch/description.launch.py  # noqa: E501
 
 import os
-
-from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():

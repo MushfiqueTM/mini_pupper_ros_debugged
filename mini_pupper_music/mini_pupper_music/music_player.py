@@ -18,9 +18,9 @@
 import threading
 
 import pyaudio
-import sounddevice
 from pydub import AudioSegment
 from pydub.utils import make_chunks
+import sounddevice
 
 
 class MusicPlayer:
@@ -44,14 +44,14 @@ class MusicPlayer:
             file=file_path,
             format=file_extension,
             start_second=start_second,
-            duration=duration
+            duration=duration,
         )
 
         stream = self.audio.open(
             format=self.audio.get_format_from_width(audio_seg.sample_width),
             channels=audio_seg.channels,
             rate=audio_seg.frame_rate,
-            output=True
+            output=True,
         )
 
         try:
@@ -69,7 +69,7 @@ class MusicPlayer:
         self.play_thread = threading.Thread(
             target=self._play_music,
             args=(file_path, start_second, duration),
-            daemon=True
+            daemon=True,
         )
         self.play_thread.start()
 

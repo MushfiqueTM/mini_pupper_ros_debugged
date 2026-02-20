@@ -17,8 +17,8 @@
 # limitations under the License.
 
 
-import rclpy
 from geometry_msgs.msg import Twist
+import rclpy
 from rclpy.node import Node
 
 
@@ -31,14 +31,14 @@ class CurvatureCompensationNode(Node):
 
         # Subscribe to nav input
         self.sub = self.create_subscription(
-            Twist, "/cmd_vel_raw", self.compensate_curvature, 10
+            Twist, "/cmd_vel_raw", self.compensate_curvature, 10,
         )
 
         # Publish to standard cmd_vel
         self.pub = self.create_publisher(Twist, "/cmd_vel", 10)
 
         self.get_logger().info(
-            f"Drift compensation active: correction_factor={self.drift_correction}"
+            f"Drift compensation active: correction_factor={self.drift_correction}",
         )
 
     def compensate_curvature(self, msg):

@@ -60,20 +60,20 @@ def generate_launch_description():
     lidar_port_launch_arg = DeclareLaunchArgument(
         name='lidar_port',
         default_value='/dev/ttyUSB0',
-        description='The serial port for the lidar sensor'
+        description='The serial port for the lidar sensor',
     )
 
     lidar_model_launch_arg = DeclareLaunchArgument(
         name='lidar_model',
         default_value='LD06',
         description='LiDAR model: LD06 or LD19',
-        choices=['LD06', 'LD19']
+        choices=['LD06', 'LD19'],
     )
 
     use_legacy_launch_arg = DeclareLaunchArgument(
         name='use_legacy_driver',
         default_value='false',
-        description='Use legacy ldlidar_stl_ros2 driver instead of new ldlidar_node'
+        description='Use legacy ldlidar_stl_ros2 driver instead of new ldlidar_node',
     )
 
     # OPTION 1: Legacy driver (old) - Use with use_legacy_driver:=true
@@ -93,7 +93,7 @@ def generate_launch_description():
             {'laser_scan_dir': True},
             {'enable_angle_crop_func': False},
             {'angle_crop_min': 135.0},
-            {'angle_crop_max': 225.0}
+            {'angle_crop_max': 225.0},
         ],
     )
 
@@ -104,7 +104,7 @@ def generate_launch_description():
     new_lidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             FindPackageShare('ldlidar_node'),
-            '/launch/ldlidar_with_mgr.launch.py'
+            '/launch/ldlidar_with_mgr.launch.py',
         ]),
         launch_arguments={
             'serial_port': lidar_port,
