@@ -29,10 +29,10 @@ from sensor_msgs.msg import Image
 class DisplayNode(Node):
     def __init__(self):
         super().__init__('display_interface')
-        self.get_logger().info("Initializing display interface")
+        self.get_logger().info('Initializing display interface')
         self.bridge = CvBridge()
         self.sub = self.create_subscription(Image, 'mini_pupper_lcd/image_raw', self.callback, 10)
-        self.get_logger().info("Creating LCD hardware interface")
+        self.get_logger().info('Creating LCD hardware interface')
         self.disp = ST7789()
         self.disp.begin()
         self.disp.clear()

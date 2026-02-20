@@ -30,19 +30,19 @@ DEG2RAD = math.pi / 180.0
 class IMUNode(Node):
     def __init__(self):
         super().__init__('imu_interface')
-        self.get_logger().info("Initializing IMU interface")
+        self.get_logger().info('Initializing IMU interface')
 
         self.freq = self.declare_parameter('freq', 100).value
         self.frame_id = self.declare_parameter('frame_id', 'imu_link').value
 
-        self.get_logger().info("Creating IMU hardware interface")
+        self.get_logger().info('Creating IMU hardware interface')
         self.esp32_interface = ESP32Interface()
         self.initialized = False
         self.gyro_offset = [0, 0, 0]
         self.acc_offset = [0, 0, 0]
         self.calibration_count = 200
 
-        self.get_logger().info("Creating IMU publisher")
+        self.get_logger().info('Creating IMU publisher')
         self.pub = self.create_publisher(Imu, 'imu/data', 10)
         self.timer = self.create_timer(1.0 / self.freq, self.timer_callback)
 
@@ -83,7 +83,7 @@ class IMUNode(Node):
                 self.gyro_offset[2] /= 200
 
                 self.initialized = True
-                self.get_logger().info("IMU calibration finished")
+                self.get_logger().info('IMU calibration finished')
             else:
                 return
 

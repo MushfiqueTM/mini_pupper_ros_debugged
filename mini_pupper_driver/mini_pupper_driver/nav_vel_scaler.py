@@ -24,9 +24,9 @@ from rclpy.node import Node
 
 class NavVelScaler(Node):
     def __init__(self):
-        super().__init__("nav_vel_scaler")
-        self.sub = self.create_subscription(Twist, "/cmd_vel_navigation2", self.scale_vel, 10)
-        self.pub = self.create_publisher(Twist, "/cmd_vel", 10)
+        super().__init__('nav_vel_scaler')
+        self.sub = self.create_subscription(Twist, '/cmd_vel_navigation2', self.scale_vel, 10)
+        self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
     def scale_vel(self, msg):
         scaled = Twist()

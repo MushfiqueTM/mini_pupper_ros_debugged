@@ -29,21 +29,21 @@ from launch_ros.actions import Node
 def generate_launch_description():
     # Note: In Jazzy, the spawner may need --controller-manager-timeout
     joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
+        package='controller_manager',
+        executable='spawner',
         arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager-timeout", "30",
+            'joint_state_broadcaster',
+            '--controller-manager-timeout', '30',
         ],
         output='screen',
     )
 
     joint_group_effort_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
+        package='controller_manager',
+        executable='spawner',
         arguments=[
-            "joint_group_effort_controller",
-            "--controller-manager-timeout", "30",
+            'joint_group_effort_controller',
+            '--controller-manager-timeout', '30',
         ],
         output='screen',
     )

@@ -34,7 +34,7 @@ class MusicPlayer:
         self.play_thread = None
 
     def _play_music(self, file_path, start_second, duration):
-        file_extension = file_path.split(".")[-1]
+        file_extension = file_path.split('.')[-1]
         if duration == 0.0:
             duration = None
 

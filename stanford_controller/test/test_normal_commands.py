@@ -53,10 +53,10 @@ class TestNormalCommands(unittest.TestCase):
         # Ensure publisher has established connection with subscribers
         timeout = time.time() + 5.0  # 5 second timeout
         while time.time() < timeout and self.command_pub.get_subscription_count() == 0:
-            print("Waiting for publisher connection...")
+            print('Waiting for publisher connection...')
             rclpy.spin_once(self.node, timeout_sec=0.1)
             time.sleep(0.5)
-        print(f"Publisher connected to {self.command_pub.get_subscription_count()} subscribers")
+        print(f'Publisher connected to {self.command_pub.get_subscription_count()} subscribers')
 
     def tearDown(self):
         self.node.destroy_subscription(self.state_sub)
@@ -75,7 +75,7 @@ class TestNormalCommands(unittest.TestCase):
                 command = self.get_command(horizontal_velocity=[0.1, 0.0], trot_event=False)
             self.command_pub.publish(command)
             rclpy.spin_once(self.node, timeout_sec=0.1)
-            print(f"Sent command {command_counter}")
+            print(f'Sent command {command_counter}')
 
             # Wait for 0.5 second between commands
             time.sleep(0.5)
@@ -84,14 +84,14 @@ class TestNormalCommands(unittest.TestCase):
         # self.write_received_states('received_normal_states.txt')
 
         assert len(self.received_states) == total_num_of_commands, \
-            f"Expected 101 states, but received {len(self.received_states)}."
+            f'Expected 101 states, but received {len(self.received_states)}.'
 
         # Verify that the received states match the expected states
         for i, (r_state, e_state) in enumerate(zip(self.received_states, expected_states)):
             assert r_state.strip() == e_state.strip(), (
-                f"State mismatch at iteration {i}:\n"
-                f"Expected: {e_state}\n"
-                f"Received: {r_state}"
+                f'State mismatch at iteration {i}:\n'
+                f'Expected: {e_state}\n'
+                f'Received: {r_state}'
             )
 
     def write_received_states(self, file_name):
@@ -101,8 +101,8 @@ class TestNormalCommands(unittest.TestCase):
 
         with open(output_file, 'w') as f:
             for state in self.received_states:
-                f.write(state + "\n\n")
-        print(f"Received states written to {output_file}")
+                f.write(state + '\n\n')
+        print(f'Received states written to {output_file}')
 
     def load_expected_states(self, file_name):
         """Load expected states from file."""
@@ -113,7 +113,7 @@ class TestNormalCommands(unittest.TestCase):
             content = f.read()
 
         # Split the content into states using double newlines as the delimiter
-        expected_states = content.strip().split("\n\n")
+        expected_states = content.strip().split('\n\n')
         return expected_states
 
     def get_command(self, horizontal_velocity, trot_event):

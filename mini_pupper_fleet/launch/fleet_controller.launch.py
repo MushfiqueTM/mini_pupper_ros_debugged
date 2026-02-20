@@ -23,18 +23,18 @@ from launch_ros.actions import Node
 
 
 def _launch_nodes(context, *args, **kwargs):
-    count = max(1, int(LaunchConfiguration("robot_count").perform(context)))
+    count = max(1, int(LaunchConfiguration('robot_count').perform(context)))
 
     nodes = []
 
     # Fleet controller with robot count parameter
     nodes.append(
         Node(
-            package="mini_pupper_fleet",
-            executable="fleet_controller_node",
-            name="fleet_controller_node",
-            output="screen",
-            parameters=[{"robot_count": count}],
+            package='mini_pupper_fleet',
+            executable='fleet_controller_node',
+            name='fleet_controller_node',
+            output='screen',
+            parameters=[{'robot_count': count}],
         ),
     )
 
@@ -43,21 +43,21 @@ def _launch_nodes(context, *args, **kwargs):
 
         nodes.append(
             Node(
-                package="mini_pupper_fleet",
-                executable="imu_ekf_node",
-                name="imu_ekf_node",
-                namespace=f"robot{i}",
-                output="screen",
+                package='mini_pupper_fleet',
+                executable='imu_ekf_node',
+                name='imu_ekf_node',
+                namespace=f'robot{i}',
+                output='screen',
             ),
         )
 
         nodes.append(
             Node(
-                package="mini_pupper_fleet",
-                executable="robot_behaviour_node",
-                name="robot_behaviour_node",
-                namespace=f"robot{i}",
-                output="screen",
+                package='mini_pupper_fleet',
+                executable='robot_behaviour_node',
+                name='robot_behaviour_node',
+                namespace=f'robot{i}',
+                output='screen',
             ),
         )
 
@@ -68,9 +68,9 @@ def generate_launch_description():
     return LaunchDescription(
         [
             DeclareLaunchArgument(
-                "robot_count",
-                default_value="1",
-                description="Number of robots in the fleet",
+                'robot_count',
+                default_value='1',
+                description='Number of robots in the fleet',
             ),
             OpaqueFunction(function=_launch_nodes),
         ],

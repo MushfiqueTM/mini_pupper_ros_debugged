@@ -96,7 +96,7 @@ class Configuration:
         # of the carbon fiber and plastic parts of the frame and did not
         # include the hip servos and electronics
         self.FRAME_INERTIA = tuple(
-            map(lambda x: 3.0 * x, (1.844e-4, 1.254e-3, 1.337e-3)),
+            3.0 * x for x in (1.844e-4, 1.254e-3, 1.337e-3)
         )
         self.MODULE_INERTIA = (3.698e-5, 7.127e-6, 4.075e-5)
 

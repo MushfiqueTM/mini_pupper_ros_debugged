@@ -60,7 +60,7 @@ class TestDanceCommands(unittest.TestCase):
         # Ensure publisher has established connection with subscribers
         timeout = time.time() + 5.0  # 5 second timeout
         while time.time() < timeout and self.command_pub.get_subscription_count() == 0:
-            print("Waiting for publisher connection...")
+            print('Waiting for publisher connection...')
             rclpy.spin_once(self.node, timeout_sec=0.1)
             time.sleep(0.5)
         print(f"Publisher connected to {self.command_pub.get_subscription_count()} subscribers")
@@ -127,7 +127,7 @@ class TestDanceCommands(unittest.TestCase):
 
         with open(output_file, 'w') as f:
             for state in self.received_states:
-                f.write(state + "\n\n")
+                f.write(state + '\n\n')
         print(f"Received states written to {output_file}")
 
     def load_expected_states(self, file_name):
@@ -139,5 +139,5 @@ class TestDanceCommands(unittest.TestCase):
             content = f.read()
 
         # Split the content into states using double newlines as the delimiter
-        expected_states = content.strip().split("\n\n")
+        expected_states = content.strip().split('\n\n')
         return expected_states

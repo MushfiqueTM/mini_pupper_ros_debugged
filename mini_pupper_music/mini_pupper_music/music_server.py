@@ -52,7 +52,7 @@ class MusicServiceNode(Node):
                                               request.duration)
                 response.success = True
                 response.message = 'Music started playing.'
-                self.get_logger().info(f"playing music at {file_path}")
+                self.get_logger().info(f'playing music at {file_path}')
 
         else:
             response.success = False

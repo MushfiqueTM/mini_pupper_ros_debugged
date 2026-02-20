@@ -27,7 +27,7 @@ class StanfordControllerNode(Node):
         self.declare_parameter('orientation_from_imu', False)
         self.orientation_from_imu = self.get_parameter(
             'orientation_from_imu').get_parameter_value().bool_value
-        self.get_logger().info(f"use_imu: {self.orientation_from_imu}")
+        self.get_logger().info(f'use_imu: {self.orientation_from_imu}')
 
         self.declare_parameter('publish_joint_control', False)
         self.publish_joint_control = self.get_parameter(
@@ -39,10 +39,10 @@ class StanfordControllerNode(Node):
 
         # Configuration and initialization
         self.joint_names = [
-            "base_lf1", "lf1_lf2", "lf2_lf3",
-            "base_rf1", "rf1_rf2", "rf2_rf3",
-            "base_lb1", "lb1_lb2", "lb2_lb3",
-            "base_rb1", "rb1_rb2", "rb2_rb3",
+            'base_lf1', 'lf1_lf2', 'lf2_lf3',
+            'base_rf1', 'rf1_rf2', 'rf2_rf3',
+            'base_lb1', 'lb1_lb2', 'lb2_lb3',
+            'base_rb1', 'rb1_rb2', 'rb2_rb3',
         ]
         self.config = config
         self.inverse_kinematics = inverse_kinematics
@@ -360,7 +360,7 @@ def main(args=None):
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.get_logger().info("Node interrupted by user, shutting down...")
+        node.get_logger().info('Node interrupted by user, shutting down...')
     finally:
         node.destroy_node()
 

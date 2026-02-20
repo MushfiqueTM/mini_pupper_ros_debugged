@@ -27,11 +27,11 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")  # noqa: N806
+    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')  # noqa: N806
 
     declare_use_sim_time = DeclareLaunchArgument(
-        name="use_sim_time", default_value="false",
-        description="Use simulation (Gazebo) clock if true",
+        name='use_sim_time', default_value='false',
+        description='Use simulation (Gazebo) clock if true',
     )
 
     default_model_path = PathJoinSubstitution([
@@ -42,8 +42,8 @@ def generate_launch_description():
     ])
 
     declare_description_path = DeclareLaunchArgument(
-        name="description_path", default_value=default_model_path,
-        description="Absolute path to robot urdf file",
+        name='description_path', default_value=default_model_path,
+        description='Absolute path to robot urdf file',
     )
 
     rviz_config_path = PathJoinSubstitution([

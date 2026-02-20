@@ -53,9 +53,9 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    lidar_port = LaunchConfiguration("lidar_port")
-    lidar_model = LaunchConfiguration("lidar_model")
-    use_legacy_driver = LaunchConfiguration("use_legacy_driver")
+    lidar_port = LaunchConfiguration('lidar_port')
+    lidar_model = LaunchConfiguration('lidar_model')
+    use_legacy_driver = LaunchConfiguration('use_legacy_driver')
 
     lidar_port_launch_arg = DeclareLaunchArgument(
         name='lidar_port',
