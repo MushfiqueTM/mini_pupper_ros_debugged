@@ -905,7 +905,7 @@
   <!-- Gazebo Harmonic (gz) compatibility - Updated for ROS 2 Jazzy -->
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/GZSimSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
     <joint name="base_lf1">
       <command_interface name="effort"/> 

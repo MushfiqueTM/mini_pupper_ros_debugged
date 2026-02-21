@@ -156,8 +156,14 @@ class CloudLineResponse(Node):
 
 def main():
     rclpy.init()
-    minimal_service = CloudLineResponse()
-    rclpy.spin(minimal_service)
+    node = CloudLineResponse()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':

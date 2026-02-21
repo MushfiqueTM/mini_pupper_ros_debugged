@@ -96,8 +96,14 @@ class LineDetectionNode(Node):
 
 def main():
     rclpy.init()
-    minimal_service = LineDetectionNode()
-    rclpy.spin(minimal_service)
+    node = LineDetectionNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':

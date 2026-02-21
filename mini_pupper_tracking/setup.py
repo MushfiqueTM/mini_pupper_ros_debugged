@@ -29,7 +29,7 @@ setup(
         ('share/' + package_name + '/models', glob('models/*')),
         ('share/' + package_name + '/config', glob('config/*.yaml'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[],
     zip_safe=False,
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',

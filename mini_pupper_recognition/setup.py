@@ -13,7 +13,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', glob('launch/*'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[],
     zip_safe=True,
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',

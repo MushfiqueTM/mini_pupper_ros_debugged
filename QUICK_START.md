@@ -50,7 +50,7 @@ cd ~/mini_pupper_ros
 # Install dependencies
 sudo apt install -y ros-jazzy-xacro ros-jazzy-ros2-control \
     ros-jazzy-ros2-controllers ros-jazzy-robot-localization \
-    ros-jazzy-ros-gz-sim ros-jazzy-gazebo-ros2-control \
+    ros-jazzy-ros-gz-sim ros-jazzy-gz-ros2-control \
     ros-jazzy-slam-toolbox ros-jazzy-nav2-bringup
 
 # Build

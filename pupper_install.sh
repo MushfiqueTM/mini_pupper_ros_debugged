@@ -70,7 +70,7 @@ sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
 
 # Additional packages for Gazebo Harmonic (from Unitree Go2 reference)
 # Note: gazebo-ros2-control is not installed on Raspberry Pi (simulation only)
-# sudo apt install -y ros-jazzy-gazebo-ros2-control  # PC only
+# sudo apt install -y ros-jazzy-gz-ros2-control  # PC only
 sudo apt install -y ros-jazzy-xacro
 sudo apt install -y ros-jazzy-robot-localization
 sudo apt install -y ros-jazzy-ros2-controllers

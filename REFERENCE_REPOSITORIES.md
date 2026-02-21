@@ -29,7 +29,7 @@ This is a **complete working example** of:
 These packages work with ROS 2 Jazzy:
 
 ```bash
-sudo apt install ros-jazzy-gazebo-ros2-control
+sudo apt install ros-jazzy-gz-ros2-control
 sudo apt install ros-jazzy-xacro
 sudo apt install ros-jazzy-robot-localization
 sudo apt install ros-jazzy-ros2-controllers
@@ -159,7 +159,7 @@ Based on Unitree Go2, add to install scripts:
 ```bash
 # Add these to pupper_install.sh and pc_install.sh
 sudo apt install -y \
-    ros-jazzy-gazebo-ros2-control \
+    ros-jazzy-gz-ros2-control \
     ros-jazzy-robot-localization \
     ros-jazzy-velodyne \
     ros-jazzy-velodyne-description

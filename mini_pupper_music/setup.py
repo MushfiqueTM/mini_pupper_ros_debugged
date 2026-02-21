@@ -15,7 +15,7 @@ setup(
         ('share/' + package_name + '/audio', glob('audio/*')),
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
     ],
-    install_requires=['setuptools'],
+    install_requires=[],
     zip_safe=True,
     maintainer='cullensun',
     maintainer_email='sunhongshuai@gmail.com',

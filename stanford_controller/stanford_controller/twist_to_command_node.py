@@ -114,6 +114,7 @@ def main(args=None):
         node.get_logger().info('Node interrupted by user, shutting down...')
     finally:
         node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':

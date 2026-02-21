@@ -36,7 +36,7 @@ sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
 sudo apt install -y ros-jazzy-rqt*
 
 # Gazebo Harmonic packages (from Unitree Go2 reference)
-sudo apt install -y ros-jazzy-gazebo-ros2-control
+sudo apt install -y ros-jazzy-gz-ros2-control
 sudo apt install -y ros-jazzy-xacro
 sudo apt install -y ros-jazzy-robot-localization
 sudo apt install -y ros-jazzy-ros2-controllers
