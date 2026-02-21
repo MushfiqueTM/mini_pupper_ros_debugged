@@ -109,6 +109,12 @@ git clone -b ros2-jazzy https://github.com/MushfiqueTM/mini_pupper_ros.git
 # Import external dependency repos (champ, ldlidar)
 cd mini_pupper_ros
 vcs import ~/mini_pupper_ws/src < .minipupper.repos
+
+# IMPORTANT: Initialize the champ submodule (libchamp headers)
+# vcs import does not init submodules, so this must be done manually
+cd ~/mini_pupper_ws/src/champ/champ
+git submodule update --init --recursive
+
 cd ~/mini_pupper_ws
 ```
 
@@ -481,6 +487,10 @@ git clone -b ros2-jazzy https://github.com/MushfiqueTM/mini_pupper_ros.git
 # Import external repos
 cd mini_pupper_ros
 vcs import ~/mini_pupper_ws/src < .minipupper.repos
+
+# Initialize champ submodule (libchamp headers)
+cd ~/mini_pupper_ws/src/champ/champ
+git submodule update --init --recursive
 
 # Disable broken Gazebo Classic champ packages (same as Section A3a)
 for pkg in champ_gazebo champ_description champ_bringup champ_navigation champ_config; do
