@@ -17,7 +17,7 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -36,28 +36,54 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true',
     )
 
+    slam_toolbox_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam_toolbox',
+        output='screen',
+        parameters=[
+            slam_config_path,
+            {'use_sim_time': use_sim_time},
+        ],
+    )
+
+    configure_slam = TimerAction(
+        period=3.0,
+        actions=[
+            ExecuteProcess(
+                cmd=['ros2', 'lifecycle', 'set', '/slam_toolbox', 'configure'],
+                output='screen',
+            ),
+        ],
+    )
+
+    activate_slam = TimerAction(
+        period=6.0,
+        actions=[
+            ExecuteProcess(
+                cmd=['ros2', 'lifecycle', 'set', '/slam_toolbox', 'activate'],
+                output='screen',
+            ),
+        ],
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=[
+            '-d', rviz_config_file_path,
+        ],
+        parameters=[
+            {'use_sim_time': use_sim_time},
+        ],
+        output='screen',
+    )
+
     return LaunchDescription([
         use_sim_time_launch_arg,
-        Node(
-            package='slam_toolbox',
-            executable='async_slam_toolbox_node',
-            name='slam_toolbox',
-            output='screen',
-            parameters=[
-                slam_config_path,
-                {'use_sim_time': use_sim_time},
-            ],
-        ),
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=[
-                '-d', rviz_config_file_path,
-            ],
-            parameters=[
-                {'use_sim_time': use_sim_time},
-            ],
-            output='screen',
-        ),
+        slam_toolbox_node,
+        configure_slam,
+        activate_slam,
+        rviz_node,
     ])
