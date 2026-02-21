@@ -19,12 +19,11 @@ The guide is organised into three parts:
 1. [PC Prerequisites](#a1-pc-prerequisites)
 2. [PC Workspace Setup](#a2-pc-workspace-setup)
 3. [Fix External Dependencies (PC)](#a3-fix-external-dependencies-pc)
-4. [Remaining File Fix — real_table.yaml](#a4-remaining-file-fix--real_tableyaml)
-5. [Build the Workspace (PC)](#a5-build-the-workspace-pc)
-6. [Test Simulation — Gazebo Harmonic](#a6-test-simulation--gazebo-harmonic)
-7. [Verify ros_gz_bridge Topics](#a7-verify-ros_gz_bridge-topics)
-8. [Test SLAM in Simulation](#a8-test-slam-in-simulation)
-9. [Test Navigation in Simulation](#a9-test-navigation-in-simulation)
+4. [Build the Workspace (PC)](#a4-build-the-workspace-pc)
+5. [Test Simulation — Gazebo Harmonic](#a5-test-simulation--gazebo-harmonic)
+6. [Verify ros_gz_bridge Topics](#a6-verify-ros_gz_bridge-topics)
+7. [Test SLAM in Simulation](#a7-test-slam-in-simulation)
+8. [Test Navigation in Simulation](#a8-test-navigation-in-simulation)
 
 ### Part B — On the Mini Pupper Robot
 
@@ -193,25 +192,7 @@ apt-cache search ros-jazzy-cartographer
 
 ---
 
-## A4. Remaining File Fix — real_table.yaml
-
-The file `mini_pupper_navigation/param/real_table.yaml` still has one
-deprecated section that should be removed.  **Delete the following block**
-(around lines 324-326):
-
-```yaml
-# DELETE THIS ENTIRE BLOCK — it's deprecated in Jazzy Nav2
-planner_server_rclcpp_node:
-  ros__parameters:
-    use_sim_time: False
-```
-
-This `*_rclcpp_node` pattern was removed in Nav2 for Jazzy.  The same cleanup
-was already applied to `mini_pupper.yaml`.
-
----
-
-## A5. Build the Workspace (PC)
+## A4. Build the Workspace (PC)
 
 ```bash
 cd ~/mini_pupper_ws
@@ -245,9 +226,9 @@ source install/setup.bash
 
 ---
 
-## A6. Test Simulation — Gazebo Harmonic
+## A5. Test Simulation — Gazebo Harmonic
 
-### A6a. Launch the simulation
+### A5a. Launch the simulation
 
 ```bash
 source ~/mini_pupper_ws/install/setup.bash
@@ -265,7 +246,7 @@ ros2 launch mini_pupper_simulation main.launch.py
 - The Mini Pupper model spawns at position (0, 0, 0.066).
 - No red error text in the terminal (warnings about unused parameters are OK).
 
-### A6b. Verify the robot loaded correctly
+### A5b. Verify the robot loaded correctly
 
 Open a **second terminal**:
 
@@ -285,7 +266,7 @@ ros2 run tf2_tools view_frames
 
 ---
 
-## A7. Verify ros_gz_bridge Topics
+## A6. Verify ros_gz_bridge Topics
 
 This is one of the **most critical steps**.  The bridge in `main.launch.py`
 currently assumes these Gazebo topic paths:
@@ -355,7 +336,7 @@ topic path.
 
 ---
 
-## A8. Test SLAM in Simulation
+## A7. Test SLAM in Simulation
 
 ### SLAM Toolbox (recommended)
 
@@ -393,7 +374,7 @@ ros2 run nav2_map_server map_saver_cli -f ~/maps/sim_map
 
 ---
 
-## A9. Test Navigation in Simulation
+## A8. Test Navigation in Simulation
 
 ```bash
 # Terminal 1 — Simulation
@@ -761,18 +742,19 @@ export ROS_DOMAIN_ID=42   # same number on PC and robot
 
 For your reference, all changes committed in the `ros2-jazzy` branch:
 
+**Early migration (code structure, build system, Gazebo, CI):**
+
 | File | Change |
 |---|---|
 | All 7 `CMakeLists.txt` | Bumped `cmake_minimum_required` to 3.16 |
 | `mini_pupper_simulation/CMakeLists.txt` | Removed invalid `find_package` for runtime deps |
 | `mini_pupper_description/CMakeLists.txt` | Removed invalid `find_package` for runtime deps |
-| `mini_pupper_description/urdf/*/mini_pupper_description.urdf.xacro` | Replaced Gazebo Classic plugins with Harmonic-native sensors; fixed `ros2_control` plugin name |
+| `mini_pupper_description/urdf/*/mini_pupper_description.urdf.xacro` | Replaced Gazebo Classic plugins with Harmonic-native sensors |
 | `mini_pupper_simulation/worlds/empty.sdf` | **New** — SDF 1.9 world file |
 | `mini_pupper_simulation/worlds/mini_pupper_home.sdf` | **New** — SDF 1.9 world file with room/obstacles |
 | `mini_pupper_simulation/launch/gazebo.launch.py` | Updated to use `.sdf` world files |
 | `mini_pupper_simulation/launch/main.launch.py` | Added `ros_gz_bridge` node for clock, LiDAR, IMU |
 | `mini_pupper_description/config/ros_control/mini_pupper_controller.yaml` | Fixed controller name (`joint_state_broadcaster`) |
-| `mini_pupper_navigation/param/mini_pupper.yaml` | Full Nav2 Jazzy update (behavior_server, plugin renames) |
 | `mini_pupper_slam/launch/slam.launch.py` | Fixed argument passing to cartographer |
 | `mini_pupper_slam/launch/slam_toolbox.launch.py` | Fixed `PathJoinSubstitution` usage |
 | `mini_pupper_driver/.../curvature_compensation.py` | Added proper `rclpy.shutdown()` |
@@ -780,6 +762,29 @@ For your reference, all changes committed in the `ros2-jazzy` branch:
 | `mini_pupper_driver/package.xml` | Fixed dependency types |
 | `mini_pupper_music/package.xml` | Added missing dependencies |
 | `.github/workflows/industrial_ci.yml` | Updated skip keys + actions version |
+| Multiple `package.xml` files | Removed invalid `<author>` tags for schema compliance |
+| 36+ Python files across 11 packages | Fixed flake8 code style (Q000, C812, I100, E501, etc.) |
+
+**Final audit fixes (latest commit):**
+
+| File | Change |
+|---|---|
+| `entrypoint.sh` | `source /opt/ros/humble/setup.bash` → `source /opt/ros/jazzy/setup.bash` |
+| `pc_install.sh` | `ros-jazzy-gazebo-ros2-control` → `ros-jazzy-gz-ros2-control` |
+| `pupper_install.sh` | Same package name fix (in comment) |
+| `mini_pupper_description/urdf/mini_pupper/mini_pupper_description.urdf.xacro` | `gz_ros2_control/GZSimSystem` → `gz_ros2_control/GazeboSimSystem` |
+| `mini_pupper_description/urdf/mini_pupper_2/mini_pupper_description.urdf.xacro` | Same plugin name fix |
+| `mini_pupper_description/urdf/mini_pupper/d435.urdf.xacro` | Replaced Gazebo Classic `libgazebo_ros_openni_kinect.so` with Harmonic `depth_camera` sensor |
+| `stanford_controller/.../stanford_controller_node.py` | Added `rclpy.shutdown()` |
+| `stanford_controller/.../twist_to_command_node.py` | Added `rclpy.shutdown()` |
+| `mini_pupper_recognition/.../line_detection_node.py` | Added `try/except/finally` with `rclpy.shutdown()` |
+| `mini_pupper_recognition/.../cloud_line_recognition_node.py` | Added `try/except/finally` with `rclpy.shutdown()` |
+| `mini_pupper_navigation/param/real_table.yaml` | Removed 9 deprecated `*_rclcpp_node`/`*_client` blocks + Groot v1 ZMQ params |
+| `mini_pupper_navigation/param/mini_pupper.yaml` | Fixed `use_sim_time: False` → `True` in both costmap sections |
+| `mini_pupper_simulation/worlds/empty.world` | **Deleted** — dead Gazebo Classic file |
+| `mini_pupper_simulation/worlds/mini_pupper_home.world` | **Deleted** — dead Gazebo Classic file |
+| 6 `setup.py` files | `install_requires=['setuptools']` → `install_requires=[]` |
+| `QUICK_START.md`, `REFERENCE_REPOSITORIES.md` | Fixed wrong `ros-jazzy-gazebo-ros2-control` package name |
 
 ---
 
@@ -791,7 +796,6 @@ For your reference, all changes committed in the `ros2-jazzy` branch:
 - [ ] Gazebo Harmonic packages installed
 - [ ] Workspace cloned and external repos imported via `vcs`
 - [ ] `rosdep` dependencies installed
-- [ ] Removed `planner_server_rclcpp_node` from `real_table.yaml` (Section A4)
 - [ ] **COLCON_IGNORE** added to broken champ packages (Section A3a)
 - [ ] `champ`, `champ_base`, `champ_msgs` build successfully
 - [ ] `ldlidar` driver builds successfully
