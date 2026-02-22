@@ -16,10 +16,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import launch
+import launch.events
+import lifecycle_msgs.msg
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
+from launch.actions import (
+    DeclareLaunchArgument,
+    EmitEvent,
+    RegisterEventHandler,
+    TimerAction,
+)
+from launch.event_handlers import OnProcessStart
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
+from launch_ros.actions import LifecycleNode, Node
+from launch_ros.event_handlers import OnStateTransition
+from launch_ros.events.lifecycle import ChangeState
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -36,10 +47,11 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true',
     )
 
-    slam_toolbox_node = Node(
+    slam_toolbox_node = LifecycleNode(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
         name='slam_toolbox',
+        namespace='',
         output='screen',
         parameters=[
             slam_config_path,
@@ -47,24 +59,36 @@ def generate_launch_description():
         ],
     )
 
-    configure_slam = TimerAction(
-        period=3.0,
-        actions=[
-            ExecuteProcess(
-                cmd=['ros2', 'lifecycle', 'set', '/slam_toolbox', 'configure'],
-                output='screen',
-            ),
-        ],
+    configure_event = EmitEvent(
+        event=ChangeState(
+            lifecycle_node_matcher=launch.events.matches_action(slam_toolbox_node),
+            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
+        ),
     )
 
-    activate_slam = TimerAction(
-        period=6.0,
-        actions=[
-            ExecuteProcess(
-                cmd=['ros2', 'lifecycle', 'set', '/slam_toolbox', 'activate'],
-                output='screen',
-            ),
-        ],
+    activate_event = EmitEvent(
+        event=ChangeState(
+            lifecycle_node_matcher=launch.events.matches_action(slam_toolbox_node),
+            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
+        ),
+    )
+
+    on_configure_done = RegisterEventHandler(
+        OnStateTransition(
+            target_lifecycle_node=slam_toolbox_node,
+            start_state='configuring',
+            goal_state='inactive',
+            entities=[activate_event],
+        ),
+    )
+
+    on_process_start = RegisterEventHandler(
+        OnProcessStart(
+            target_action=slam_toolbox_node,
+            on_start=[
+                TimerAction(period=2.0, actions=[configure_event]),
+            ],
+        ),
     )
 
     rviz_node = Node(
@@ -83,7 +107,7 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_launch_arg,
         slam_toolbox_node,
-        configure_slam,
-        activate_slam,
+        on_configure_done,
+        on_process_start,
         rviz_node,
     ])
