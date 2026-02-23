@@ -111,7 +111,8 @@ cd mini_pupper_ros
 vcs import ~/mini_pupper_ws/src < .minipupper.repos
 
 # IMPORTANT: Initialize the champ submodule (libchamp headers)
-# vcs import does not init submodules, so this must be done manually
+# vcs import does not init submodules, so this must be done manually.
+# The submodule lives at champ/champ/include/champ (pointing to libchamp).
 cd ~/mini_pupper_ws/src/champ/champ
 git submodule update --init --recursive
 
@@ -346,16 +347,34 @@ topic path.
 
 ### SLAM Toolbox (recommended)
 
+Each terminal needs the environment sourced. Open three separate terminals:
+
 ```bash
-# Terminal 1 — Simulation (if not already running)
+# Terminal 1 — Launch the simulation
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export ROBOT_MODEL=mini_pupper_2
 ros2 launch mini_pupper_simulation main.launch.py
+```
 
-# Terminal 2 — SLAM
-ros2 launch mini_pupper_slam slam_toolbox.launch.py use_sim_time:=true
+```bash
+# Terminal 2 — Launch SLAM
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export ROBOT_MODEL=mini_pupper_2
+ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
+```
 
-# Terminal 3 — Teleoperation (drive the robot around)
+```bash
+# Terminal 3 — Teleoperate the robot (drive it around to build the map)
+source /opt/ros/jazzy/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
+
+**Teleop keys:** `i`=forward, `,`=backward, `j`=turn left, `l`=turn right,
+`k`=stop, `q`/`z`=increase/decrease speed.
 
 **Verify:**
 - A map builds incrementally in RViz as you drive.
@@ -383,10 +402,19 @@ ros2 run nav2_map_server map_saver_cli -f ~/maps/sim_map
 ## A8. Test Navigation in Simulation
 
 ```bash
-# Terminal 1 — Simulation
+# Terminal 1 — Launch the simulation
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export ROBOT_MODEL=mini_pupper_2
 ros2 launch mini_pupper_simulation main.launch.py
+```
 
-# Terminal 2 — Navigation (use the map you just saved)
+```bash
+# Terminal 2 — Launch Navigation (use the map you saved in A7)
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 ros2 launch mini_pupper_navigation navigation.launch.py \
   use_sim_time:=true \
   map:=$HOME/maps/sim_map.yaml
@@ -394,6 +422,8 @@ ros2 launch mini_pupper_navigation navigation.launch.py \
 
 **Verify:**
 - Nav2 nodes start without errors.
+- Both `lifecycle_manager_localization` and `lifecycle_manager_navigation`
+  report "Managed nodes are active" in the terminal.
 - You should see `behavior_server` in the logs (NOT `recoveries_server`).
 - In RViz: set "2D Pose Estimate" to localise, then "2D Nav Goal" to navigate.
 - The robot plans a path and drives to the goal.
@@ -795,6 +825,17 @@ For your reference, all changes committed in the `ros2-jazzy` branch:
 | `mini_pupper_simulation/worlds/mini_pupper_home.world` | **Deleted** — dead Gazebo Classic file |
 | 6 `setup.py` files | `install_requires=['setuptools']` → `install_requires=[]` |
 | `QUICK_START.md`, `REFERENCE_REPOSITORIES.md` | Fixed wrong `ros-jazzy-gazebo-ros2-control` package name |
+
+**Nav2 Jazzy runtime fixes (navigation activation):**
+
+| File | Change |
+|---|---|
+| `mini_pupper_navigation/param/mini_pupper.yaml` | Replaced Humble-era `plugin_lib_names` with Jazzy `navigators` config for `bt_navigator` |
+| `mini_pupper_navigation/param/real_table.yaml` | Same `bt_navigator` fix |
+| `mini_pupper_navigation/param/mini_pupper.yaml` | Fixed plugin names from slash format (`/`) to Jazzy double-colon format (`::`) |
+| `mini_pupper_navigation/param/real_table.yaml` | Same plugin name format fix |
+| `mini_pupper_navigation/param/mini_pupper.yaml` | Added missing Jazzy nodes: `velocity_smoother`, `smoother_server`, `route_server`, `collision_monitor`, `docking_server` |
+| `mini_pupper_navigation/param/mini_pupper.yaml` | Added `lifecycle_manager_localization` and `lifecycle_manager_navigation` with `autostart: true` |
 
 ---
 
