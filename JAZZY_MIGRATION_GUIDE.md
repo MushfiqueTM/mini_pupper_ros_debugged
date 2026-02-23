@@ -493,18 +493,36 @@ The hardware driver nodes (`servo_interface`, `imu_interface`,
 - `MangDang.mini_pupper.ESP32Interface` (IMU via ESP32)
 - `MangDang.LCD.ST7789` (LCD display)
 
-**If you are using MangDang's pre-built ROS image** (recommended), these
-packages are already pre-installed — no action needed.
+**If you are using MangDang's pre-built ROS image** (recommended for Humble),
+these packages are already pre-installed — no action needed.
 
-**If you installed Ubuntu from scratch** on the Raspberry Pi / Compute Module,
-you will need to install the BSP manually.  Check MangDang's official
-resources for the latest method:
-- <https://minipupperdocs.readthedocs.io/en/latest/guide/ROS2Guide.html>
-- <https://github.com/mangdangroboticsclub/mini_pupper_ros>
+**For Ubuntu 24.04 (Jazzy) fresh installs**, you need the patched BSP that
+supports Noble / Python 3.12.  We maintain a fork with the necessary fixes:
 
-> **Note:** As of writing, MangDang's pre-built images are based on
-> Ubuntu 22.04 / ROS 2 Humble.  A Jazzy (Ubuntu 24.04) image may not
-> be available yet — check the docs for updates.
+```bash
+cd ~
+git clone https://github.com/MushfiqueTM/mini_pupper_bsp.git mini_pupper_bsp
+cd mini_pupper_bsp
+./install.sh
+sudo reboot
+```
+
+The patched BSP handles:
+- PEP 668 (`--break-system-packages`) for pip on Ubuntu 24.04
+- DEB822 apt sources format (Noble uses `/etc/apt/sources.list.d/ubuntu.sources`)
+- Latest setuptools (instead of pinned 58.2.0 which breaks on Python 3.12)
+- libcamera-native camera support (skips legacy `start_x=1` / `gpu_mem=128`)
+
+After reboot, verify the BSP installed correctly:
+```bash
+python3 -c "from MangDang.mini_pupper.HardwareInterface import HardwareInterface; print('BSP OK')"
+calibrate  # should open the servo calibration tool
+```
+
+> **Note:** The original upstream BSP
+> (<https://github.com/mangdangroboticsclub/mini_pupper_2_bsp>) targets
+> Ubuntu 22.04 / Python 3.10 only.  Our fork adds Ubuntu 24.04 support
+> while remaining backward-compatible with 22.04.
 
 ---
 
