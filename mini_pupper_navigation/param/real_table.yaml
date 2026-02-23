@@ -235,7 +235,7 @@ planner_server:
     expected_planner_frequency: 1.0
 
     GridBased:
-      plugin: "nav2_smac_planner/SmacPlanner2D"
+      plugin: "nav2_smac_planner::SmacPlanner2D"
       
       downsample_costmap: false
       downsampling_factor: 1
@@ -276,18 +276,18 @@ behavior_server:
     min_rotational_vel: 0.01
     rotational_acc_lim: 0.1
     spin:
-      plugin: "nav2_behaviors/Spin"
+      plugin: "nav2_behaviors::Spin"
 
     backup:
-      plugin: "nav2_behaviors/BackUp"
+      plugin: "nav2_behaviors::BackUp"
       backup_speed: 0.02
       backup_time: 0.5
     drive_on_heading:
-      plugin: "nav2_behaviors/DriveOnHeading"
+      plugin: "nav2_behaviors::DriveOnHeading"
       speed: 0.02
       time: 0.5
     wait:
-      plugin: "nav2_behaviors/Wait"
+      plugin: "nav2_behaviors::Wait"
 
 robot_state_publisher:
   ros__parameters:
