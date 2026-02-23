@@ -485,24 +485,26 @@ sudo apt install -y \
   ros-jazzy-teleop-twist-keyboard
 ```
 
-### Install MangDang BSP (Board Support Packages)
+### MangDang BSP (Board Support Packages)
 
-These are hardware-specific Python packages that interface with the servos,
-IMU, display, and ESP32.  Follow MangDang's official instructions:
+The hardware driver nodes (`servo_interface`, `imu_interface`,
+`display_interface`) import MangDang-specific Python packages:
+- `MangDang.mini_pupper.HardwareInterface` (servos)
+- `MangDang.mini_pupper.ESP32Interface` (IMU via ESP32)
+- `MangDang.LCD.ST7789` (LCD display)
 
-```bash
-# Typical installation (check MangDang docs for the latest method):
-# - MangDang.mini_pupper.HardwareInterface
-# - MangDang.LCD.ST7789
-# - MangDang.mini_pupper.ESP32Interface
-#
-# These are usually installed via pip or MangDang's setup script.
-# Without these, the hardware driver nodes will fail with:
-#   "No module named 'MangDang'"
-```
+**If you are using MangDang's pre-built ROS image** (recommended), these
+packages are already pre-installed — no action needed.
 
-> MangDang's official setup guide:
-> <https://github.com/mangdangroboticsclub/mini_pupper_ros>
+**If you installed Ubuntu from scratch** on the Raspberry Pi / Compute Module,
+you will need to install the BSP manually.  Check MangDang's official
+resources for the latest method:
+- <https://minipupperdocs.readthedocs.io/en/latest/guide/ROS2Guide.html>
+- <https://github.com/mangdangroboticsclub/mini_pupper_ros>
+
+> **Note:** As of writing, MangDang's pre-built images are based on
+> Ubuntu 22.04 / ROS 2 Humble.  A Jazzy (Ubuntu 24.04) image may not
+> be available yet — check the docs for updates.
 
 ---
 
