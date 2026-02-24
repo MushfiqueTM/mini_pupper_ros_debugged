@@ -43,12 +43,13 @@ Usage:
 """
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo
+from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.conditions import IfCondition, UnlessCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.actions import ComposableNodeContainer, LifecycleNode, Node
+from launch_ros.descriptions import ComposableNode
 from launch_ros.substitutions import FindPackageShare
+from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
@@ -59,7 +60,7 @@ def generate_launch_description():
 
     lidar_port_launch_arg = DeclareLaunchArgument(
         name='lidar_port',
-        default_value='/dev/ttyUSB0',
+        default_value='/dev/ldlidar',
         description='The serial port for the lidar sensor',
     )
 
@@ -77,7 +78,6 @@ def generate_launch_description():
     )
 
     # OPTION 1: Legacy driver (old) - Use with use_legacy_driver:=true
-    # Note: Legacy driver may not support LD19 properly
     legacy_lidar_node = Node(
         package='ldlidar_stl_ros2',
         executable='ldlidar_stl_ros2_node',
@@ -85,7 +85,7 @@ def generate_launch_description():
         output='screen',
         condition=IfCondition(use_legacy_driver),
         parameters=[
-            {'product_name': 'LDLiDAR_LD06'},  # Legacy driver only supports LD06
+            {'product_name': 'LDLiDAR_LD06'},
             {'topic_name': 'scan'},
             {'frame_id': 'lidar_link'},
             {'port_name': lidar_port},
@@ -97,20 +97,66 @@ def generate_launch_description():
         ],
     )
 
-    # OPTION 2: New driver (recommended) - Default for Jazzy
-    # Uses lifecycle manager for proper state management
-    # Supports both LD06 and LD19 models
-    # Note: The devel branch supports both Humble and Jazzy
-    new_lidar_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            FindPackageShare('ldlidar_node'),
-            '/launch/ldlidar_with_mgr.launch.py',
-        ]),
-        launch_arguments={
-            'serial_port': lidar_port,
-            'lidar_model': lidar_model,  # Supports LD06 or LD19
-        }.items(),
+    # OPTION 2: New driver (recommended for Jazzy)
+    # Inline container + lifecycle manager to avoid ComposableNodeContainer
+    # namespace bug in older ldlidar_node launch files on Jazzy.
+    ldlidar_model_str = PythonExpression([
+        "'LDLiDAR_LD19' if '", lidar_model, "' == 'LD19' else 'LDLiDAR_LD06'",
+    ])
+
+    ldlidar_container = ComposableNodeContainer(
+        name='ldlidar_container',
+        namespace='/',
+        package='rclcpp_components',
+        executable='component_container_isolated',
+        composable_node_descriptions=[
+            ComposableNode(
+                package='ldlidar_component',
+                plugin='ldlidar::LdLidarComponent',
+                name='ldlidar_node',
+                namespace='/',
+                parameters=[{
+                    'general.debug_mode': False,
+                    'comm.serial_port': lidar_port,
+                    'comm.baudrate': 230400,
+                    'comm.timeout_msec': 1000,
+                    'lidar.model': ldlidar_model_str,
+                    'lidar.rot_verse': 'CCW',
+                    'lidar.units': 'M',
+                    'lidar.frame_id': 'lidar_link',
+                    'lidar.bins': 455,
+                    'lidar.range_min': 0.03,
+                    'lidar.range_max': 15.0,
+                    'lidar.enable_angle_crop': False,
+                }],
+            ),
+        ],
+        output='screen',
         condition=UnlessCondition(use_legacy_driver),
+    )
+
+    ldlidar_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='ldlidar_state_publisher',
+        output='screen',
+        condition=UnlessCondition(use_legacy_driver),
+        arguments=[
+            FindPackageShare('ldlidar_component'),
+            '/urdf/ldlidar_descr.urdf.xml',
+        ],
+    )
+
+    ldlidar_lifecycle_mgr = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager',
+        output='screen',
+        condition=UnlessCondition(use_legacy_driver),
+        parameters=[{
+            'autostart': True,
+            'node_names': ['ldlidar_node'],
+        }],
     )
 
     return LaunchDescription([
@@ -121,7 +167,7 @@ def generate_launch_description():
         LogInfo(msg=['Using lidar model: ', lidar_model]),
         LogInfo(msg=['Using legacy driver: ', use_legacy_driver]),
 
-        # Launch appropriate driver based on use_legacy_driver parameter
         legacy_lidar_node,
-        new_lidar_launch,
+        ldlidar_container,
+        ldlidar_lifecycle_mgr,
     ])
