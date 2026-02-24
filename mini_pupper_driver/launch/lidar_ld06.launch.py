@@ -46,10 +46,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
-from launch_ros.actions import ComposableNodeContainer, LifecycleNode, Node
+from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
-from launch_ros.substitutions import FindPackageShare
-from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
@@ -133,18 +131,6 @@ def generate_launch_description():
         ],
         output='screen',
         condition=UnlessCondition(use_legacy_driver),
-    )
-
-    ldlidar_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='ldlidar_state_publisher',
-        output='screen',
-        condition=UnlessCondition(use_legacy_driver),
-        arguments=[
-            FindPackageShare('ldlidar_component'),
-            '/urdf/ldlidar_descr.urdf.xml',
-        ],
     )
 
     ldlidar_lifecycle_mgr = Node(
