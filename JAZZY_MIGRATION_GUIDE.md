@@ -177,14 +177,34 @@ colcon list --packages-select champ_gazebo 2>&1
 
 ### A3b. LiDAR driver (Myzhar ldrobot-lidar-ros2)
 
-The `devel` branch should build on Jazzy.  If it doesn't:
+The `devel` branch should build on Jazzy with no code changes.  However, the
+default config file needs to be updated for Mini Pupper's hardware:
 
-1. Check for `rclcpp` lifecycle API changes in the error output.
-2. After building, verify parameter names match what your launch files use:
+```bash
+cd ~/mini_pupper_ws
 
-   ```bash
-   ros2 run ldlidar_node ldlidar_node --ros-args --list-parameters
-   ```
+# Change LiDAR model from LD19 to LD06
+sed -i "s/model: 'LDLiDAR_LD19'/model: 'LDLiDAR_LD06'/" \
+  src/ldlidar/ldlidar_node/params/ldlidar.yaml
+
+# Change frame_id from ldlidar_link to lidar_link (matches Mini Pupper URDF)
+sed -i "s/frame_id: 'ldlidar_link'/frame_id: 'lidar_link'/" \
+  src/ldlidar/ldlidar_node/params/ldlidar.yaml
+```
+
+> **Note:** If you have an **LD19** LiDAR, keep `LDLiDAR_LD19` but still
+> change `frame_id` to `lidar_link`.
+
+### A3b-2. Fix champ EKF configuration
+
+The upstream champ EKF configs need two fixes:
+1. `base_to_footprint.yaml` incorrectly fuses linear velocity from IMU
+   (IMU only provides angular velocity and linear acceleration)
+2. Both EKF frequencies (50 Hz) are too high for Raspberry Pi
+
+See [Section B2 → Configure external dependencies](#configure-external-dependencies-for-mini-pupper-hardware)
+for the exact changes.  Apply the same edits on your PC if you plan to test
+with `robot_localization` in simulation.
 
 ### A3c. Cartographer availability
 
@@ -203,6 +223,7 @@ apt-cache search ros-jazzy-cartographer
 
 ```bash
 cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
 
 # Install rosdep dependencies (skip packages not available for Jazzy)
 rosdep install --from-paths src --ignore-src -r -y \
@@ -216,6 +237,9 @@ colcon build --symlink-install
 
 # Source the workspace
 source install/setup.bash
+
+# Add to .bashrc so it's sourced automatically in every new terminal
+echo "source ~/mini_pupper_ws/install/setup.bash" >> ~/.bashrc
 ```
 
 ### Troubleshooting build failures
@@ -546,8 +570,97 @@ git submodule update --init --recursive
 for pkg in champ_gazebo champ_description champ_bringup champ_navigation champ_config; do
   touch ~/mini_pupper_ws/src/champ/champ/$pkg/COLCON_IGNORE
 done
+```
 
+### Configure external dependencies for Mini Pupper hardware
+
+The upstream `ldrobot-lidar-ros2` driver and `champ` EKF configs ship with
+defaults that don't match Mini Pupper's hardware.  Apply these fixes **before
+building**.
+
+#### Fix LiDAR driver configuration
+
+The upstream `ldlidar.yaml` defaults to the LD19 model with `ldlidar_link`
+frame.  Mini Pupper uses **LD06** and the URDF expects **`lidar_link`**:
+
+```bash
 cd ~/mini_pupper_ws
+
+# Change LiDAR model from LD19 to LD06
+sed -i "s/model: 'LDLiDAR_LD19'/model: 'LDLiDAR_LD06'/" \
+  src/ldlidar/ldlidar_node/params/ldlidar.yaml
+
+# Change frame_id from ldlidar_link to lidar_link (matches URDF)
+sed -i "s/frame_id: 'ldlidar_link'/frame_id: 'lidar_link'/" \
+  src/ldlidar/ldlidar_node/params/ldlidar.yaml
+```
+
+After editing, `src/ldlidar/ldlidar_node/params/ldlidar.yaml` should contain:
+
+```yaml
+    lidar:
+      model: 'LDLiDAR_LD06'
+      # ...
+      frame_id: 'lidar_link'
+```
+
+> **Note:** If you have an **LD19** LiDAR instead, keep `LDLiDAR_LD19` but
+> still change `frame_id` to `lidar_link`.
+
+#### Fix EKF configuration for IMU data
+
+The upstream champ EKF config (`base_to_footprint.yaml`) incorrectly fuses
+**linear velocity** (row 3) from the IMU, but `sensor_msgs/Imu` only provides
+**angular velocity** (row 4) and **linear acceleration** (row 5).  The EKF
+frequencies are also too high for the Raspberry Pi.
+
+```bash
+cd ~/mini_pupper_ws
+```
+
+Edit `src/champ/champ/champ_base/config/ekf/base_to_footprint.yaml` —
+change the `frequency` and `imu0_config`:
+
+```yaml
+base_to_footprint_ekf:
+  ros__parameters:
+    frequency: 15.0   # reduced from 50.0 for Raspberry Pi
+
+    # ... (leave pose0 and pose0_config unchanged) ...
+
+    # IMU provides angular_velocity and linear_acceleration only
+    imu0: imu/data
+    imu0_config: [false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  true, true, true,
+                  true, true, true]
+```
+
+The key change in `imu0_config`: rows 4–5 (angular velocity + linear
+acceleration) are now `true`, instead of row 3 (linear velocity) which an
+IMU does not provide.
+
+Edit `src/champ/champ/champ_base/config/ekf/footprint_to_odom.yaml` —
+change only the `frequency` (the `imu0_config` is already correct):
+
+```yaml
+footprint_to_odom_ekf:
+  ros__parameters:
+    frequency: 20.0   # reduced from 50.0 for Raspberry Pi
+```
+
+> **Why reduce frequencies?** The Raspberry Pi CPU struggles to maintain 50 Hz
+> for both EKF nodes while also running LiDAR, IMU, and servo drivers.
+> 15–20 Hz is sufficient for stable odometry on this platform.
+
+---
+
+Now continue with rosdep and building:
+
+```bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
 
 # Install rosdep dependencies
 rosdep install --from-paths src --ignore-src -r -y \
@@ -556,9 +669,11 @@ rosdep install --from-paths src --ignore-src -r -y \
 # Build the workspace
 colcon build --symlink-install
 
-# Source it
+# Source the workspace
+source install/setup.bash
+
+# Add to .bashrc so it's sourced automatically in every new terminal
 echo "source ~/mini_pupper_ws/install/setup.bash" >> ~/.bashrc
-source ~/.bashrc
 ```
 
 > **Tip:** Building on a Raspberry Pi is slow.  Consider cross-compiling on
@@ -569,7 +684,70 @@ source ~/.bashrc
 
 ## B3. Hardware Bringup
 
+### Fix ESP32 proxy service (one-time setup)
+
+The BSP installs an `esp32-proxy` systemd service that bridges communication
+between the Raspberry Pi and the ESP32 co-processor (used by both the IMU and
+servo drivers).  The default service file has a configuration bug: it uses
+`Type=oneshot` for a persistent daemon, which prevents the socket permission
+fix (`chmod`) from ever running.
+
+**Check if the fix is needed:**
+
 ```bash
+sudo systemctl status esp32-proxy
+```
+
+If it shows `activating (start)` instead of `active (running)`, apply this fix:
+
+```bash
+# Edit the service file
+sudo nano /usr/lib/systemd/system/esp32-proxy.service
+```
+
+Change the `[Service]` section to:
+
+```ini
+[Service]
+Type=simple
+ExecStart=/var/lib/mini_pupper_bsp/esp32-proxy
+ExecStartPost=/bin/sleep 1
+ExecStartPost=/bin/chmod 777 /tmp/esp32-proxy.socket
+User=root
+```
+
+The key changes:
+- `Type=oneshot` → `Type=simple` (tells systemd this is a long-running daemon)
+- Added `ExecStartPost` lines to wait for the socket to appear, then set
+  permissions so non-root users can connect
+
+Apply the changes:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart esp32-proxy
+
+# Verify it's running
+sudo systemctl status esp32-proxy
+# Should show: active (running)
+
+# Verify socket permissions
+ls -la /tmp/esp32-proxy.socket
+# Should show: srwxrwxrwx (777 permissions)
+```
+
+### Launch the hardware bringup
+
+Make sure to kill any leftover ROS processes from previous runs first:
+
+```bash
+# Kill any zombie ROS/DDS processes from previous runs
+sudo killall -9 component_container_isolated lifecycle_manager ros2 2>/dev/null
+
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
 # Set the robot model
 export ROBOT_MODEL=mini_pupper_2   # or mini_pupper for v1
 
@@ -582,7 +760,9 @@ ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=true
 In a **second terminal on the robot** (or SSH session):
 
 ```bash
-source ~/mini_pupper_ws/install/setup.bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 
 # List all active topics
 ros2 topic list
@@ -602,6 +782,11 @@ ros2 topic echo /imu/data --once
 - `/scan` publishes `LaserScan` messages from the LD06/LD19 LiDAR.
 - `/imu/data` publishes `Imu` messages from the onboard IMU.
 
+> **Note:** You may see `ekf_node: Failed to meet update rate!` warnings in
+> the bringup terminal.  This is **benign** on the Raspberry Pi — the CPU
+> occasionally cannot sustain the target EKF frequency under full load, but it
+> does not affect robot operation.
+
 If `/scan` is missing, the LiDAR driver may not have started.  Check:
 ```bash
 ros2 node list | grep ldlidar
@@ -620,14 +805,19 @@ Make sure your PC and the Mini Pupper are on the **same network** and using
 the same `ROS_DOMAIN_ID` (default is 0).
 
 ```bash
-source ~/mini_pupper_ws/install/setup.bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 
 # Drive the robot with keyboard
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
+**Teleop keys:** `i`=forward, `,`=backward, `j`=turn left, `l`=turn right,
+`k`=stop, `q`/`z`=increase/decrease speed.
+
 **Verify:**
-- The robot responds to WASD/arrow keys.
+- The robot responds to keyboard commands.
 - All four legs move correctly.
 - The robot walks forward, backward, turns left, turns right.
 
@@ -636,6 +826,10 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 If you prefer to test directly on the robot via SSH:
 
 ```bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
@@ -645,7 +839,12 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ### [On the robot] — Start SLAM
 
+Open a **second SSH terminal** to the robot (keep bringup running in the first):
+
 ```bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 export ROBOT_MODEL=mini_pupper_2
 
 # Make sure bringup is running (Section B3), then:
@@ -655,13 +854,21 @@ ros2 launch mini_pupper_slam slam_toolbox.launch.py use_sim_time:=false
 ### [On your PC] — Visualise and drive
 
 ```bash
-source ~/mini_pupper_ws/install/setup.bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 
 # Open RViz to see the map being built
 rviz2
 # In RViz: Add displays for Map (/map), LaserScan (/scan), TF, RobotModel
+```
 
-# In another terminal — drive the robot around
+```bash
+# In another terminal on your PC — drive the robot around
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
@@ -670,6 +877,8 @@ Drive the robot slowly around the room.  Watch the map build in RViz.
 ### [On the robot or PC] — Save the map
 
 ```bash
+source /opt/ros/jazzy/setup.bash
+
 mkdir -p ~/maps
 ros2 run nav2_map_server map_saver_cli -f ~/maps/my_room
 ```
@@ -679,7 +888,7 @@ you saved them on the robot:
 
 ```bash
 # [On your PC]
-scp ubuntu@<robot-ip>:~/maps/my_room.* ~/maps/
+scp mushfiquetm@<robot-ip>:~/maps/my_room.* ~/maps/
 ```
 
 ---
@@ -688,7 +897,12 @@ scp ubuntu@<robot-ip>:~/maps/my_room.* ~/maps/
 
 ### [On the robot] — Start navigation
 
+Open a **second SSH terminal** to the robot (keep bringup running in the first):
+
 ```bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 export ROBOT_MODEL=mini_pupper_2
 
 # Make sure bringup is running (Section B3), then:
@@ -700,6 +914,10 @@ ros2 launch mini_pupper_navigation navigation.launch.py \
 ### [On your PC] — Send goals via RViz
 
 ```bash
+cd ~/mini_pupper_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
 rviz2
 ```
 
