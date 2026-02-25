@@ -44,12 +44,6 @@ def generate_launch_description():
         description='if the robot has camera module',
     )
 
-    lidar_port = LaunchConfiguration('lidar_port')
-    lidar_port_launch_arg = DeclareLaunchArgument(
-        name='lidar_port',
-        description='The serial port for the lidar sensor',
-    )
-
     driver_package = FindPackageShare('mini_pupper_driver')
 
     servos_launch_path = PathJoinSubstitution(
@@ -70,7 +64,6 @@ def generate_launch_description():
         [
             has_lidar_launch_arg,
             has_imu_launch_arg,
-            lidar_port_launch_arg,
             has_camera_launch_arg,
             IncludeLaunchDescription(PythonLaunchDescriptionSource(servos_launch_path)),
             IncludeLaunchDescription(

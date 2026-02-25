@@ -43,22 +43,19 @@ def get_config():
     sensors_config.setdefault('imu', False)
     sensors_config.setdefault('camera', False)
 
-    ports_config = configuration.get('ports', {})
-
-    return sensors_config, ports_config
+    return sensors_config
 
 
 def generate_launch_description():
     bringup_package = FindPackageShare('mini_pupper_bringup')
     description_package = FindPackageShare('mini_pupper_description')
 
-    sensors_config, ports_config = get_config()
+    sensors_config = get_config()
 
     # Convert bool to str because cannot pass bool directly to launch_arguments.
     has_lidar = str(sensors_config['lidar'])
     has_imu = str(sensors_config['imu'])
     has_camera = str(sensors_config['camera'])
-    lidar_port = ports_config['lidar']
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -94,7 +91,6 @@ def generate_launch_description():
             'has_lidar': has_lidar,
             'has_imu': has_imu,
             'has_camera': has_camera,
-            'lidar_port': lidar_port,
         }.items(),
     )
 
