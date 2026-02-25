@@ -48,8 +48,9 @@ class IMUNode(Node):
 
     def read_imu(self):
         raw_data = self.esp32_interface.imu_get_data()
+        if raw_data is None:
+            return None
 
-        # Differnet direction of x-axis and y-axis
         return [
             raw_data['ay'] * GRAVITY,
             raw_data['ax'] * GRAVITY,
@@ -60,9 +61,15 @@ class IMUNode(Node):
         ]
 
     def timer_callback(self):
-        msg = Imu()
+        result = self.read_imu()
+        if result is None:
+            if not getattr(self, '_imu_none_logged', False):
+                self.get_logger().warn('IMU read returned None - ESP32 not responding')
+                self._imu_none_logged = True
+            return
 
-        ax, ay, az, gx, gy, gz = self.read_imu()
+        ax, ay, az, gx, gy, gz = result
+        msg = Imu()
 
         if not self.initialized:
             self.acc_offset[0] += ax
