@@ -177,34 +177,17 @@ colcon list --packages-select champ_gazebo 2>&1
 
 ### A3b. LiDAR driver (Myzhar ldrobot-lidar-ros2)
 
-The `devel` branch should build on Jazzy with no code changes.  However, the
-default config file needs to be updated for Mini Pupper's hardware:
+The `devel` branch builds on Jazzy with no code changes.  **No manual
+configuration is needed** — `mini_pupper_driver` ships its own `ldlidar.yaml`
+(configured for LD06, `lidar_link` frame, `/dev/ldlidar` port) and loads it
+at launch time, bypassing the upstream defaults.
 
-```bash
-cd ~/mini_pupper_ws
+### A3b-2. EKF configuration
 
-# Change LiDAR model from LD19 to LD06
-sed -i "s/model: 'LDLiDAR_LD19'/model: 'LDLiDAR_LD06'/" \
-  src/ldlidar/ldlidar_node/params/ldlidar.yaml
-
-# Change frame_id from ldlidar_link to lidar_link (matches Mini Pupper URDF)
-sed -i "s/frame_id: 'ldlidar_link'/frame_id: 'lidar_link'/" \
-  src/ldlidar/ldlidar_node/params/ldlidar.yaml
-```
-
-> **Note:** If you have an **LD19** LiDAR, keep `LDLiDAR_LD19` but still
-> change `frame_id` to `lidar_link`.
-
-### A3b-2. Fix champ EKF configuration
-
-The upstream champ EKF configs need two fixes:
-1. `base_to_footprint.yaml` incorrectly fuses linear velocity from IMU
-   (IMU only provides angular velocity and linear acceleration)
-2. Both EKF frequencies (50 Hz) are too high for Raspberry Pi
-
-See [Section B2 → Configure external dependencies](#configure-external-dependencies-for-mini-pupper-hardware)
-for the exact changes.  Apply the same edits on your PC if you plan to test
-with `robot_localization` in simulation.
+**No manual configuration is needed** — `mini_pupper_bringup` ships its own
+corrected EKF config files (`config/ekf/*.yaml`) with:
+- Fixed `imu0_config` (fuses angular velocity + linear acceleration, not linear velocity)
+- Reduced frequencies (15–20 Hz) suitable for Raspberry Pi
 
 ### A3c. Cartographer availability
 
@@ -572,89 +555,10 @@ for pkg in champ_gazebo champ_description champ_bringup champ_navigation champ_c
 done
 ```
 
-### Configure external dependencies for Mini Pupper hardware
-
-The upstream `ldrobot-lidar-ros2` driver and `champ` EKF configs ship with
-defaults that don't match Mini Pupper's hardware.  Apply these fixes **before
-building**.
-
-#### Fix LiDAR driver configuration
-
-The upstream `ldlidar.yaml` defaults to the LD19 model with `ldlidar_link`
-frame.  Mini Pupper uses **LD06** and the URDF expects **`lidar_link`**:
-
-```bash
-cd ~/mini_pupper_ws
-
-# Change LiDAR model from LD19 to LD06
-sed -i "s/model: 'LDLiDAR_LD19'/model: 'LDLiDAR_LD06'/" \
-  src/ldlidar/ldlidar_node/params/ldlidar.yaml
-
-# Change frame_id from ldlidar_link to lidar_link (matches URDF)
-sed -i "s/frame_id: 'ldlidar_link'/frame_id: 'lidar_link'/" \
-  src/ldlidar/ldlidar_node/params/ldlidar.yaml
-```
-
-After editing, `src/ldlidar/ldlidar_node/params/ldlidar.yaml` should contain:
-
-```yaml
-    lidar:
-      model: 'LDLiDAR_LD06'
-      # ...
-      frame_id: 'lidar_link'
-```
-
-> **Note:** If you have an **LD19** LiDAR instead, keep `LDLiDAR_LD19` but
-> still change `frame_id` to `lidar_link`.
-
-#### Fix EKF configuration for IMU data
-
-The upstream champ EKF config (`base_to_footprint.yaml`) incorrectly fuses
-**linear velocity** (row 3) from the IMU, but `sensor_msgs/Imu` only provides
-**angular velocity** (row 4) and **linear acceleration** (row 5).  The EKF
-frequencies are also too high for the Raspberry Pi.
-
-```bash
-cd ~/mini_pupper_ws
-```
-
-Edit `src/champ/champ/champ_base/config/ekf/base_to_footprint.yaml` —
-change the `frequency` and `imu0_config`:
-
-```yaml
-base_to_footprint_ekf:
-  ros__parameters:
-    frequency: 15.0   # reduced from 50.0 for Raspberry Pi
-
-    # ... (leave pose0 and pose0_config unchanged) ...
-
-    # IMU provides angular_velocity and linear_acceleration only
-    imu0: imu/data
-    imu0_config: [false, false, false,
-                  false, false, false,
-                  false, false, false,
-                  true, true, true,
-                  true, true, true]
-```
-
-The key change in `imu0_config`: rows 4–5 (angular velocity + linear
-acceleration) are now `true`, instead of row 3 (linear velocity) which an
-IMU does not provide.
-
-Edit `src/champ/champ/champ_base/config/ekf/footprint_to_odom.yaml` —
-change only the `frequency` (the `imu0_config` is already correct):
-
-```yaml
-footprint_to_odom_ekf:
-  ros__parameters:
-    frequency: 20.0   # reduced from 50.0 for Raspberry Pi
-```
-
-> **Why reduce frequencies?** The Raspberry Pi CPU struggles to maintain 50 Hz
-> for both EKF nodes while also running LiDAR, IMU, and servo drivers.
-> 15–20 Hz is sufficient for stable odometry on this platform.
-
----
+> **Pre-configured:** LiDAR config (LD06, `lidar_link`, `/dev/ldlidar`) and
+> EKF config (corrected IMU fusion, reduced frequencies for Raspberry Pi) are
+> already included in `mini_pupper_ros`.  No manual edits to upstream repos
+> are needed.
 
 Now continue with rosdep and building:
 
@@ -684,57 +588,17 @@ echo "source ~/mini_pupper_ws/install/setup.bash" >> ~/.bashrc
 
 ## B3. Hardware Bringup
 
-### Fix ESP32 proxy service (one-time setup)
-
-The BSP installs an `esp32-proxy` systemd service that bridges communication
-between the Raspberry Pi and the ESP32 co-processor (used by both the IMU and
-servo drivers).  The default service file has a configuration bug: it uses
-`Type=oneshot` for a persistent daemon, which prevents the socket permission
-fix (`chmod`) from ever running.
-
-**Check if the fix is needed:**
-
-```bash
-sudo systemctl status esp32-proxy
-```
-
-If it shows `activating (start)` instead of `active (running)`, apply this fix:
-
-```bash
-# Edit the service file
-sudo nano /usr/lib/systemd/system/esp32-proxy.service
-```
-
-Change the `[Service]` section to:
-
-```ini
-[Service]
-Type=simple
-ExecStart=/var/lib/mini_pupper_bsp/esp32-proxy
-ExecStartPost=/bin/sleep 1
-ExecStartPost=/bin/chmod 777 /tmp/esp32-proxy.socket
-User=root
-```
-
-The key changes:
-- `Type=oneshot` → `Type=simple` (tells systemd this is a long-running daemon)
-- Added `ExecStartPost` lines to wait for the socket to appear, then set
-  permissions so non-root users can connect
-
-Apply the changes:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl restart esp32-proxy
-
-# Verify it's running
-sudo systemctl status esp32-proxy
-# Should show: active (running)
-
-# Verify socket permissions
-ls -la /tmp/esp32-proxy.socket
-# Should show: srwxrwxrwx (777 permissions)
-```
+> **Pre-configured:** The ESP32 proxy service fix (`Type=simple` + socket
+> permissions) is already included in the
+> [mini_pupper_bsp](https://github.com/MushfiqueTM/mini_pupper_bsp) repo.
+> If you installed the BSP from our fork (Section B1), no manual service
+> file edits are needed.
+>
+> You can verify it's working with:
+> ```bash
+> sudo systemctl status esp32-proxy
+> # Should show: active (running)
+> ```
 
 ### Launch the hardware bringup
 

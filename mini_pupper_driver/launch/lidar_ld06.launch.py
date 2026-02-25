@@ -17,26 +17,60 @@
 # limitations under the License.
 
 """
-LD06/LD19 LiDAR Launch File for ROS 2 Jazzy.
+LD06/LD19 LiDAR Launch File for Mini Pupper (ROS 2 Jazzy).
 
-Uses the upstream ldrobot-lidar-ros2 driver (ldlidar_node) with lifecycle
-management. Serial port, model, and frame_id are configured in
-ldlidar_node/params/ldlidar.yaml (set to /dev/ldlidar, LD06, lidar_link).
+Self-contained launch that uses the ldrobot-lidar-ros2 composable component
+with Mini Pupper's own config (mini_pupper_driver/config/ldlidar.yaml).
+This avoids depending on upstream default settings that don't match
+Mini Pupper's hardware (LD06 model, lidar_link frame, /dev/ldlidar port).
 """
 
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, LogInfo
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
+from launch.actions import LogInfo
+from launch_ros.actions import ComposableNodeContainer, Node
+from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
+    lidar_config_path = os.path.join(
+        get_package_share_directory('mini_pupper_driver'),
+        'config',
+        'ldlidar.yaml',
+    )
+
+    ldlidar_container = ComposableNodeContainer(
+        name='ldlidar_container',
+        namespace='/',
+        package='rclcpp_components',
+        executable='component_container_isolated',
+        composable_node_descriptions=[
+            ComposableNode(
+                package='ldlidar_component',
+                plugin='ldlidar::LdLidarComponent',
+                name='ldlidar_node',
+                namespace='/',
+                parameters=[lidar_config_path],
+            ),
+        ],
+        output='screen',
+    )
+
+    ldlidar_lifecycle_mgr = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager',
+        output='screen',
+        parameters=[{
+            'autostart': True,
+            'node_names': ['ldlidar_node'],
+        }],
+    )
+
     return LaunchDescription([
-        LogInfo(msg='Launching ldlidar_node with lifecycle manager (upstream driver)'),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([
-                FindPackageShare('ldlidar_node'),
-                '/launch/ldlidar_with_mgr.launch.py',
-            ]),
-        ),
+        LogInfo(msg='Launching ldlidar_node for Mini Pupper (LD06)'),
+        ldlidar_container,
+        ldlidar_lifecycle_mgr,
     ])
