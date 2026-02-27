@@ -18,6 +18,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -30,14 +31,34 @@ def generate_launch_description():
     rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
+    rviz = LaunchConfiguration('rviz')
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='False',
         description='Use simulation (Gazebo) clock if true',
     )
 
+    rviz_launch_arg = DeclareLaunchArgument(
+        name='rviz',
+        default_value='false',
+        description='Launch RViz on this machine',
+    )
+
+    slam_lifecycle_mgr = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='slam_lifecycle_manager',
+        output='screen',
+        parameters=[{
+            'autostart': True,
+            'node_names': ['slam_toolbox'],
+            'bond_timeout': 0.0,
+        }],
+    )
+
     return LaunchDescription([
         use_sim_time_launch_arg,
+        rviz_launch_arg,
         Node(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
@@ -48,10 +69,12 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time},
             ],
         ),
+        slam_lifecycle_mgr,
         Node(
             package='rviz2',
             executable='rviz2',
             name='rviz2',
+            condition=IfCondition(rviz),
             arguments=[
                 '-d', rviz_config_file_path,
             ],

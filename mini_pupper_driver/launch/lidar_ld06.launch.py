@@ -66,6 +66,7 @@ def generate_launch_description():
         parameters=[{
             'autostart': True,
             'node_names': ['ldlidar_node'],
+            'bond_timeout': 0.0,
         }],
     )
 

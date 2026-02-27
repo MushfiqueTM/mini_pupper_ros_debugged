@@ -18,6 +18,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -37,8 +38,16 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true',
     )
 
+    rviz = LaunchConfiguration('rviz')
+    rviz_launch_arg = DeclareLaunchArgument(
+        name='rviz',
+        default_value='False',
+        description='Launch RViz2 (set to True on PC with display)',
+    )
+
     return LaunchDescription([
         use_sim_time_launch_arg,
+        rviz_launch_arg,
         Node(
             package='cartographer_ros',
             executable='cartographer_node',
@@ -75,5 +84,6 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time},
             ],
             output='screen',
+            condition=IfCondition(rviz),
         ),
     ])
