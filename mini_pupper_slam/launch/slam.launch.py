@@ -28,7 +28,8 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     slam_package = FindPackageShare('mini_pupper_slam')
 
-    slam_toolbox_launch_path = PathJoinSubstitution([slam_package, 'launch', 'slam_toolbox.launch.py'])
+    slam_toolbox_launch_path = PathJoinSubstitution(
+        [slam_package, 'launch', 'slam_toolbox.launch.py'])
     rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
