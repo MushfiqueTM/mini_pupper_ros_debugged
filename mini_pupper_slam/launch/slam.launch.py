@@ -17,9 +17,10 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -27,8 +28,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     slam_package = FindPackageShare('mini_pupper_slam')
 
-    cartographer_config_dir = PathJoinSubstitution([slam_package, 'config'])
-    cartographer_config_basename = TextSubstitution(text='slam.lua')
+    slam_toolbox_launch_path = PathJoinSubstitution([slam_package, 'launch', 'slam_toolbox.launch.py'])
     rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -48,30 +48,12 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_launch_arg,
         rviz_launch_arg,
-        Node(
-            package='cartographer_ros',
-            executable='cartographer_node',
-            name='cartographer_node',
-            output='screen',
-            parameters=[
-                {'use_sim_time': use_sim_time},
-            ],
-            arguments=[
-                '-configuration_directory', cartographer_config_dir,
-                '-configuration_basename', cartographer_config_basename,
-            ],
-            remappings=[('/imu/data', 'imu')],
-        ),
-        Node(
-            package='cartographer_ros',
-            executable='cartographer_occupancy_grid_node',
-            parameters=[
-                {'use_sim_time': use_sim_time},
-            ],
-            arguments=[
-                '-resolution', '0.05',
-                '-publish_period_sec', '1.0',
-            ],
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(slam_toolbox_launch_path),
+            launch_arguments={
+                'use_sim_time': use_sim_time,
+                'rviz': 'False',
+            }.items(),
         ),
         Node(
             package='rviz2',

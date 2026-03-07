@@ -63,7 +63,7 @@ def generate_launch_description():
 
         parameters=[
             {'robot_description': Command(['xacro ', description_path])},
-            {'use_tf_static': False},
+            {'use_tf_static': True},
             {'publish_frequency': 200.0},
             {'ignore_timestamp': True},
             {'use_sim_time': use_sim_time},

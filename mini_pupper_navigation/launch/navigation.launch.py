@@ -53,13 +53,15 @@ def generate_launch_description():
 
     remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
 
+    rewritten_yaml = RewrittenYaml(
+        source_file=nav2_param_file_path,
+        root_key='',
+        param_rewrites={'autostart': 'true', 'use_sim_time': use_sim_time},
+        convert_types=True,
+    )
+
     configured_params = ParameterFile(
-        RewrittenYaml(
-            source_file=nav2_param_file_path,
-            root_key='',
-            param_rewrites={'autostart': 'true'},
-            convert_types=True,
-        ),
+        rewritten_yaml,
         allow_substs=True,
     )
 
@@ -67,10 +69,8 @@ def generate_launch_description():
         'controller_server',
         'smoother_server',
         'planner_server',
-        'route_server',
         'behavior_server',
         'velocity_smoother',
-        'collision_monitor',
         'bt_navigator',
         'waypoint_follower',
     ]
@@ -102,7 +102,7 @@ def generate_launch_description():
                 'map': map_yaml,
                 'use_sim_time': use_sim_time,
                 'autostart': 'true',
-                'params_file': nav2_param_file_path,
+                'params_file': rewritten_yaml,
                 'use_composition': 'True',
                 'container_name': 'nav2_container',
             }.items(),
@@ -135,13 +135,6 @@ def generate_launch_description():
                         remappings=remappings,
                     ),
                     ComposableNode(
-                        package='nav2_route',
-                        plugin='nav2_route::RouteServer',
-                        name='route_server',
-                        parameters=[configured_params],
-                        remappings=remappings,
-                    ),
-                    ComposableNode(
                         package='nav2_behaviors',
                         plugin='behavior_server::BehaviorServer',
                         name='behavior_server',
@@ -167,14 +160,10 @@ def generate_launch_description():
                         plugin='nav2_velocity_smoother::VelocitySmoother',
                         name='velocity_smoother',
                         parameters=[configured_params],
-                        remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
-                    ),
-                    ComposableNode(
-                        package='nav2_collision_monitor',
-                        plugin='nav2_collision_monitor::CollisionMonitor',
-                        name='collision_monitor',
-                        parameters=[configured_params],
-                        remappings=remappings,
+                        remappings=remappings + [
+                            ('cmd_vel', 'cmd_vel_nav'),
+                            ('cmd_vel_smoothed', 'cmd_vel'),
+                        ],
                     ),
                     ComposableNode(
                         package='nav2_lifecycle_manager',

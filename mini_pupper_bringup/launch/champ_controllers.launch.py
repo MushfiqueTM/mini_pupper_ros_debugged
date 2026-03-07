@@ -110,6 +110,7 @@ def generate_launch_description():
             links_config_path,
             gait_config_path,
         ],
+        remappings=[('odom', 'odom/raw')],
     )
 
     return LaunchDescription(
