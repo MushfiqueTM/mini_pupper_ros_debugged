@@ -17,20 +17,24 @@
 # limitations under the License.
 
 
+import os
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
+ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
+
 
 def generate_launch_description():
     bringup_package = FindPackageShare('mini_pupper_bringup')
     base_to_footprint_ekf_config_path = PathJoinSubstitution(
-        [bringup_package, 'config', 'ekf', 'base_to_footprint.yaml'],
+        [bringup_package, 'config', 'ekf', ROBOT_MODEL, 'base_to_footprint.yaml'],
     )
     footprint_to_odom_ekf_config_path = PathJoinSubstitution(
-        [bringup_package, 'config', 'ekf', 'footprint_to_odom.yaml'],
+        [bringup_package, 'config', 'ekf', ROBOT_MODEL, 'footprint_to_odom.yaml'],
     )
 
     use_sim_time = LaunchConfiguration('use_sim_time')

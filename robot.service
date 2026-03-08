@@ -1,9 +1,11 @@
 [Unit]
 Description=Robot control service
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 User=ubuntu
+WorkingDirectory=/tmp
 ExecStart=/bin/bash --login -c 'source /home/ubuntu/.bashrc; /var/lib/minipupper/run.sh'
 KillSignal=2
 TimeoutStopSec=10
