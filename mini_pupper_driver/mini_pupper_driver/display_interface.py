@@ -19,7 +19,6 @@
 
 import cv2
 from cv_bridge import CvBridge
-from MangDang.LCD.ST7789 import ST7789
 import PIL
 import rclpy
 from rclpy.node import Node
@@ -33,6 +32,15 @@ class DisplayNode(Node):
         self.bridge = CvBridge()
         self.sub = self.create_subscription(Image, 'mini_pupper_lcd/image_raw', self.callback, 10)
         self.get_logger().info('Creating LCD hardware interface')
+        try:
+            from MangDang.LCD.ST7789 import ST7789
+        except ImportError:
+            self.get_logger().fatal(
+                'MangDang LCD/BSP not found. Install the Noble-compatible Mini Pupper BSP '
+                'before running display_interface. See: '
+                'https://github.com/MangDang/mini_pupper_bsp'
+            )
+            raise SystemExit(1)
         self.disp = ST7789()
         self.disp.begin()
         self.disp.clear()

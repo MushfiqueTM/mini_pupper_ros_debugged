@@ -17,7 +17,6 @@
 
 import math
 
-from MangDang.mini_pupper.ESP32Interface import ESP32Interface
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
@@ -36,6 +35,15 @@ class IMUNode(Node):
         self.frame_id = self.declare_parameter('frame_id', 'imu_link').value
 
         self.get_logger().info('Creating IMU hardware interface')
+        try:
+            from MangDang.mini_pupper.ESP32Interface import ESP32Interface
+        except ImportError:
+            self.get_logger().fatal(
+                'MangDang BSP not found. Install the Noble-compatible Mini Pupper BSP '
+                'before running imu_interface. This node only applies to Mini Pupper 2 '
+                '(which has an IMU). See: https://github.com/MangDang/mini_pupper_bsp'
+            )
+            raise SystemExit(1)
         self.esp32_interface = ESP32Interface()
         self.initialized = False
         self.gyro_offset = [0, 0, 0]

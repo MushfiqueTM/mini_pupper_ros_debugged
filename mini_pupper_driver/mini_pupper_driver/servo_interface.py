@@ -17,7 +17,6 @@
 # limitations under the License.
 # @Author  : Zhengxiao Han
 
-from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -30,6 +29,15 @@ class ServoInterface(Node):
         self.subscriber = self.create_subscription(
             JointTrajectory, 'joint_group_effort_controller/joint_trajectory',
             self.cmd_callback, 1)
+        try:
+            from MangDang.mini_pupper.HardwareInterface import HardwareInterface
+        except ImportError:
+            self.get_logger().fatal(
+                'MangDang BSP not found. Install the Noble-compatible Mini Pupper BSP '
+                'before running servo_interface. See: '
+                'https://github.com/MangDang/mini_pupper_bsp'
+            )
+            raise SystemExit(1)
         self.hardware_interface = HardwareInterface()
 
     def cmd_callback(self, msg):
