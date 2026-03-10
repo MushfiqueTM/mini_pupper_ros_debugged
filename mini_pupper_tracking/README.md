@@ -122,8 +122,8 @@ yolo export model=yolo11n.pt format=onnx imgsz=320  # Change 320 to your preferr
 Move the exported `.onnx` file to the tracking package directory:
 
 ```bash
-mkdir ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
-mv yolo11n.onnx ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
+mkdir ~/mini_pupper_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
+mv yolo11n.onnx ~/mini_pupper_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
 # To use the YOLO model you exported replace yolo11n.onnx with its model name
 
 # To use a different YOLO model, also update the model name in tracking_node.py:
@@ -145,14 +145,14 @@ yolo:
 ### Mini Pupper (on robot)
 ```bash
 # Terminal 1 (SSH into robot)
-source ~/ros2_ws/install/setup.bash  # Use setup.zsh if your shell is zsh
+source ~/mini_pupper_ws/install/setup.bash  # Use setup.zsh if your shell is zsh
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ```
 
 ### Host PC
 ```bash
 # Terminal 2
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_tracking tracking.launch.py
 ```
 
@@ -170,7 +170,7 @@ The package includes RViz visualisation showing:
 Launch RViz separately to view:
 ```bash
 # Terminal 3
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_description stanford_visualisation.launch.py
 ```
 
@@ -207,7 +207,7 @@ The package includes unit tests for the main testable functions of movement and 
 
 ```bash
 # To run all tests
-python3 -m pytest ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/test/ -v
+python3 -m pytest ~/mini_pupper_ws/src/mini_pupper_ros/mini_pupper_tracking/test/ -v
 ```
 
 ---
@@ -250,6 +250,6 @@ This package is licensed under the Apache-2.0 License. See individual source fil
 
 ## Compatibility
 
-- **ROS 2**: Humble
+- **ROS 2**: Jazzy
 - **Platform**: Ubuntu 22.04 LTS
 - **Hardware**: Mini Pupper robots with Stanford Controller

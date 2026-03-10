@@ -23,6 +23,8 @@
   
   <!-- Jazzy additional dependencies -->
   <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>mini_pupper_driver</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

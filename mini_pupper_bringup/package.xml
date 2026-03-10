@@ -11,6 +11,9 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   
   <exec_depend>champ_base</exec_depend>
+  <exec_depend>mini_pupper_description</exec_depend>
+  <exec_depend>mini_pupper_driver</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>

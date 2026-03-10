@@ -25,27 +25,27 @@ The system combines fleet-level command coordination, IMU-based Extended Kalman 
 **Robot Terminals (SSH to each robot individually):**
 ```bash
 # Robot 1 SSH Terminal
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py multi_robot:=true robot_namespace:=robot1
 
 # Robot 2 SSH Terminal
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py multi_robot:=true robot_namespace:=robot2
 
 # Robot 3 SSH Terminal
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py multi_robot:=true robot_namespace:=robot3
 ```
 
 **Host PC Terminal 1 - Fleet Controller:**
 ```bash
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_fleet fleet_controller.launch.py robot_count:=3
 ```
 
 **Host PC Terminal 2 - Teleop:**
 ```bash
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
@@ -323,6 +323,6 @@ This package is licensed under the Apache-2.0 License. See individual source fil
 
 ## Compatibility
 
-- **ROS 2**: Humble  
+- **ROS 2**: Jazzy  
 - **Platform**: Ubuntu 22.04 LTS  
 - **Hardware**: Mini Pupper robots with Stanford Controller  

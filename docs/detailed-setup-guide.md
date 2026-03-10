@@ -37,7 +37,7 @@ After installing the driver software, install ROS 2 Jazzy is required, if the in
 
 ```sh
 cd ~
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
 cd mini_pupper_ros
 ./pupper_install.sh
 ```
@@ -58,7 +58,7 @@ Ubuntu 24.04 + ROS 2 Jazzy is required.
 
 ```sh
 cd ~
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
 cd mini_pupper_ros
 ./pc_install.sh
 ```
@@ -173,25 +173,25 @@ Note: This step is only for PC
 
 ```sh
 # Terminal 1
-. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+. ~/mini_pupper_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=False
 ```
 ```sh
 # Terminal 2
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup rviz.launch.py
 ```
 
 - If using keyboard control
 ```sh
 # Terminal 3
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 3
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
@@ -201,20 +201,20 @@ Note: This step is only for PC. Gazebo Harmonic is used in ROS 2 Jazzy.
 
 ```sh
 # Terminal 1
-. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+. ~/mini_pupper_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - If using keyboard control
 ```sh
 # Terminal 2
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 2
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
@@ -225,34 +225,34 @@ Note: This step is only for PC
 - Bring up Gazebo
 ```sh
 # Terminal 1
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - Mapping on PC
 ```sh
 # Terminal 2
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
 ```
 
 - If using keyboard control
 ```sh
 # Terminal 3
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 3
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 - Save the map  
 ```sh
 # Terminal 4 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run nav2_map_server map_saver_cli -f ~/map
 ```
 The map will be saved under home directory. Two files will be generated, namely map.pgm and map.yaml.
@@ -263,14 +263,14 @@ The map will be saved under home directory. Two files will be generated, namely 
 - Bring up Gazebo
 ```sh
 # Terminal 1
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - Navigation   
 ```sh
 # Terminal 2
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true
 ```
 Alternatively, if you wish to use the map you generated in previous step, you can specify the map path with the following command.
@@ -290,20 +290,20 @@ Open 2 terminals and ssh login to Mini Pupper on both.
 
 ```sh
 # Terminal 1 (ssh)
-. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+. ~/mini_pupper_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
 - If using keyboard control
 ```sh
 # Terminal 2 (ssh or PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 2 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
@@ -314,14 +314,14 @@ Note: This step requires both PC and Mini Pupper
 - Bring up real mini pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
 - SLAM on PC
 ```sh
 # Terminal 2 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_slam slam_toolbox.launch.py
 ```
 
@@ -329,13 +329,13 @@ Remotely control the Mini Pupper to complete the mapping.
 - If using keyboard control
 ```sh
 # Terminal 3 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 3 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
@@ -343,7 +343,7 @@ ros2 launch teleop_twist_joy teleop-launch.py
 Run the following command from a new terminal.
 ```sh
 # Terminal 4 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 run nav2_map_server map_saver_cli -f ~/map
 ```
 The map will be saved under home directory. Two files will be generated, namely map.pgm and map.yaml.
@@ -353,7 +353,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 - Bring up real mini pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup.launch.py
 
 ```
@@ -361,7 +361,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 - Navigation with previously saved map from step 2.2.2
 ```sh
 # Terminal 4 (on PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_navigation navigation_smacplanner.launch.py map:=$HOME/map.yaml
 ```
 
@@ -377,7 +377,7 @@ Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 Before bringing up mini pupper, please change the config file under
 ```
 (ssh)
-~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config
+~/mini_pupper_ws/src/mini_pupper_ros/mini_pupper_bringup/config
 ```
 Open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml). 
 
@@ -395,14 +395,14 @@ ports:
 - Bring up real mini pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
 - Launch all nodes (currently including line following only)
 ```sh
 # Terminal 2 (ssh or PC)
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
 ```
 
@@ -414,7 +414,7 @@ ros2 run rqt_image_view rqt_image_view
 
 - Launch the GenAI Image Recognition Line Following Demo (This is a code sample written to demonstrate the use of GenAI for image recognition and line following, but it is not recommended to use it as a primary function for line following, as there may be significant delays) This code requires access to our repository of generative AI models and supporting infrastructure.
 ```sh
-. ~/ros2_ws/install/setup.bash
+. ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_recognition cloud_line_demo.launch.py
 ```
 

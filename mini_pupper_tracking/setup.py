@@ -34,7 +34,7 @@ setup(
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
     description='Mini Pupper vision-based tracking system for ROS 2 Jazzy',
-    license='Apache 2.0',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

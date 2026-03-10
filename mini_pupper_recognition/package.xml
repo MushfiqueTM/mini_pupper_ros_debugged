@@ -11,6 +11,7 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
   <depend>mini_pupper_interfaces</depend>
 
   <test_depend>python3-pytest</test_depend>
