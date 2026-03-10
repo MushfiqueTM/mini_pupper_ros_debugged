@@ -45,7 +45,7 @@ def detect_black_line(frame):
         largest_contour = max(contours, key=cv2.contourArea)
         rect = cv2.minAreaRect(largest_contour)
         box = cv2.boxPoints(rect)
-        box = np.int0(box)
+        box = np.intp(box)
 
         # Calculate the center of the line
         center_x = int(rect[0][0])

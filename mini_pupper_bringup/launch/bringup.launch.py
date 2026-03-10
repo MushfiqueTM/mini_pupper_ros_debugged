@@ -43,14 +43,16 @@ def get_config():
     sensors_config.setdefault('imu', False)
     sensors_config.setdefault('camera', False)
 
-    return sensors_config
+    ports_config = configuration.get('ports', {})
+
+    return sensors_config, ports_config
 
 
 def generate_launch_description():
     bringup_package = FindPackageShare('mini_pupper_bringup')
     description_package = FindPackageShare('mini_pupper_description')
 
-    sensors_config = get_config()
+    sensors_config, ports_config = get_config()
 
     # Convert bool to str because cannot pass bool directly to launch_arguments.
     has_lidar = str(sensors_config['lidar'])
@@ -89,6 +91,7 @@ def generate_launch_description():
         condition=IfCondition(hardware_connected),
         launch_arguments={
             'has_lidar': has_lidar,
+            'lidar_port': ports_config.get('lidar', '/dev/ttyUSB0'),
             'has_imu': has_imu,
             'has_camera': has_camera,
         }.items(),

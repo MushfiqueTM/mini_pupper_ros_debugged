@@ -5,7 +5,7 @@ amcl:
     global_frame_id: "map"
     odom_frame_id: "odom"
     scan_topic: scan
-    robot_model_type: "nav2_amcl::OmniMotionModel"
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
     laser_model_type: "likelihood_field"
     set_initial_pose: True
     initial_pose: 

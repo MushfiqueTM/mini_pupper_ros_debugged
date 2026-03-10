@@ -19,7 +19,7 @@ import cv2
 import time
 
 
-def create_flask_app(node, flask_config):
+def create_flask_app(node, flask_config, port=5000):
     app = Flask(__name__)
 
     @app.route('/')

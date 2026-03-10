@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <description>Mini Pupper vision-based tracking package for ROS 2 Jazzy</description>
   <maintainer email="kishangrewal06@gmail.com">kishan</maintainer>
-  <license>Apache 2.0</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
@@ -28,11 +28,10 @@
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
-  <test_depend>stanford_controller</test_depend>
+
+  <exec_depend>stanford_controller</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
-    <ament_export_launch>launch</ament_export_launch>
-    <ros_export_launch>launch</ros_export_launch>
   </export>
 </package>

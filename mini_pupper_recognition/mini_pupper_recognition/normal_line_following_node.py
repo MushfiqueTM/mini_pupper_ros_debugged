@@ -49,7 +49,10 @@ class LineFollowingNode(Node):
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(float(msg.angular))) * 3)
+        denominator = (abs(float(msg.linear)) + abs(float(msg.angular))) * 3
+        if denominator == 0:
+            return
+        velocity_cmd.linear.x = 0.10 / denominator
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 

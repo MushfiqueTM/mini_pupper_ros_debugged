@@ -20,16 +20,17 @@ fi
 source /opt/ros/jazzy/setup.bash
 
 # Create ROS 2 workspace and clone Mini Pupper ROS repository
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
+mkdir -p ~/mini_pupper_ws/src
+cd ~/mini_pupper_ws/src
 if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+  git clone https://github.com/MushfiqueTM/mini_pupper_ros_fixed.git -b ros2-jazzy mini_pupper_ros
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 
 # Install dependencies and build the ROS 2 packages
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
+cd ~/mini_pupper_ws
+rosdep install --from-paths src --ignore-src -r -y \
+  --skip-keys="champ_base champ_teleop champ_description champ_gazebo ldlidar_node ldlidar_stl_ros2 gazebo_plugins gazebo_ros gazebo_ros_pkgs gazebo_ros2_control velodyne_gazebo_plugins joint_state_publisher_gui rviz2"
 # Install ROS 2 Jazzy packages (based on Unitree Go2 working configuration)
 sudo apt install -y ros-jazzy-teleop-twist-keyboard ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins

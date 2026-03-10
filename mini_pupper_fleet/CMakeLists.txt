@@ -42,8 +42,8 @@ add_executable(imu_ekf_node
 target_include_directories(imu_ekf_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
-  ${EIGEN3_INCLUDE_DIRS}
 )
+target_link_libraries(imu_ekf_node Eigen3::Eigen)
 ament_target_dependencies(imu_ekf_node
   rclcpp
   sensor_msgs

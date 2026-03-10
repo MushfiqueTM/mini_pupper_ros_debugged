@@ -100,7 +100,7 @@ class StanfordControllerNode(Node):
         # self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
-        self.quat_orientation = np.array([
+        self.state.quat_orientation = np.array([
             msg.orientation.w,
             msg.orientation.x,
             msg.orientation.y,
@@ -182,7 +182,6 @@ class StanfordControllerNode(Node):
             self.get_logger().info(
                 f'received hop_event new behavior_state is {self.state.behavior_state}')
 
-        # disp.show_state(state.behavior_state)
         self.dance_active(command)
         self.pseudo_dance_active(command)
 
@@ -269,7 +268,7 @@ class StanfordControllerNode(Node):
                 if (
                     abs(command.horizontal_velocity[0]) < 0.01
                     and abs(command.horizontal_velocity[1]) < 0.01
-                    and abs(command.yaw_rate == 0)
+                    and abs(command.yaw_rate) == 0
                 ):
                     self.state.foot_locations = location_buf
                 else:

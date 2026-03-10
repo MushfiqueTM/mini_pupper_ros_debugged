@@ -10,7 +10,7 @@ from .math_operations import euler_from_quaternion, quaternion_from_euler
 class PoseController(Node):
 
     def __init__(self):
-        super().__init__('minimal_publisher')
+        super().__init__('pose_controller')
         self.publisher_ = self.create_publisher(Pose, 'body_pose', 10)
         timer_period = 0.001  # seconds
         self.publisher_timer = self.create_timer(timer_period,

@@ -25,7 +25,7 @@ import sounddevice
 
 class MusicPlayer:
     def __init__(self):
-        # sounddevice is not used in any logics, just print something here
+        # Import sounddevice early to work around audio device init ordering
         # See: https://stackoverflow.com/a/76305661/663645
         print(sounddevice.query_devices())
 
@@ -79,4 +79,5 @@ class MusicPlayer:
     def destroy(self):
         self.stop_music()
         self.audio.terminate()
-        self.play_thread.join()
+        if self.play_thread is not None:
+            self.play_thread.join()

@@ -60,13 +60,13 @@ Flash the ready-to-use image containing Ubuntu 24.04, ROS 2 Jazzy, and all Mini 
 ### Test Basic Movement
 ```bash
 # Terminal 1 (SSH to robot)
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 ```bash
 
 # Terminal 2 (PC or robot)
-source ~/ros2_ws/install/setup.bash
+source ~/mini_pupper_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
@@ -76,7 +76,7 @@ For comprehensive documentation, visit our [online guide](https://minipupperdocs
 
 ## Migration from Humble to Jazzy
 
-See [MIGRATION_JAZZY.md](MIGRATION_JAZZY.md) for detailed migration instructions if you're upgrading from a Humble-based system.
+See [JAZZY_MIGRATION_GUIDE.md](JAZZY_MIGRATION_GUIDE.md) for detailed migration instructions if you're upgrading from a Humble-based system.
 
 ## Contributing
 Contributions are welcome.

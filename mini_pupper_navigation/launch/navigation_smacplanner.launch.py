@@ -19,6 +19,7 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 # from launch.actions import LogInfo
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetRemap
@@ -58,9 +59,16 @@ def generate_launch_description():
         description='Full path to map file to load',
     )
 
-    # Scope remap to Nav2 only: cmd_vel -> cmd_vel_navigation2
+    rviz_cfg = LaunchConfiguration('rviz')
+    rviz_launch_arg = DeclareLaunchArgument(
+        name='rviz',
+        default_value='False',
+        description='Launch RViz on this machine',
+    )
+
+    # Scope remap to Nav2 only: cmd_vel -> cmd_vel_nav
     nav2_group = GroupAction([
-        SetRemap(src='cmd_vel', dst='cmd_vel_navigation2'),
+        SetRemap(src='cmd_vel', dst='cmd_vel_nav'),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),
             launch_arguments={
@@ -71,7 +79,7 @@ def generate_launch_description():
         ),
     ])
 
-    # Already uses /cmd_vel_navigation2 -> /cmd_vel, so no remaps needed here
+    # Already uses /cmd_vel_nav -> /cmd_vel, so no remaps needed here
     nav_vel_scaler = Node(
         package='mini_pupper_driver',
         executable='nav_vel_scaler',
@@ -83,6 +91,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
+        condition=IfCondition(rviz_cfg),
         arguments=['-d', rviz_config_file_path],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
@@ -91,6 +100,7 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_launch_arg,
         map_launch_arg,
+        rviz_launch_arg,
         nav2_group,
         nav_vel_scaler,
         rviz,

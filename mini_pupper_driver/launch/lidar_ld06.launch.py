@@ -15,32 +15,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-LD06/LD19 LiDAR Launch File for Mini Pupper (ROS 2 Jazzy).
-
-Self-contained launch that uses the ldrobot-lidar-ros2 composable component
-with Mini Pupper's own config (mini_pupper_driver/config/ldlidar.yaml).
-This avoids depending on upstream default settings that don't match
-Mini Pupper's hardware (LD06 model, lidar_link frame, /dev/ldlidar port).
-"""
-
 import os
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import LogInfo
+from launch.actions import DeclareLaunchArgument, LogInfo
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
+    lidar_port = LaunchConfiguration('lidar_port')
+    lidar_port_launch_arg = DeclareLaunchArgument(
+        'lidar_port',
+        default_value='/dev/ttyUSB0',
+        description='device path for the lidar serial port',
+    )
     lidar_config_path = os.path.join(
         get_package_share_directory('mini_pupper_driver'),
         'config',
         'ldlidar.yaml',
     )
-
     ldlidar_container = ComposableNodeContainer(
         name='ldlidar_container',
         namespace='/',
@@ -52,12 +47,11 @@ def generate_launch_description():
                 plugin='ldlidar::LdLidarComponent',
                 name='ldlidar_node',
                 namespace='/',
-                parameters=[lidar_config_path],
+                parameters=[lidar_config_path, {'comm.serial_port': lidar_port}],
             ),
         ],
         output='screen',
     )
-
     ldlidar_lifecycle_mgr = Node(
         package='nav2_lifecycle_manager',
         executable='lifecycle_manager',
@@ -69,8 +63,8 @@ def generate_launch_description():
             'bond_timeout': 0.0,
         }],
     )
-
     return LaunchDescription([
+        lidar_port_launch_arg,
         LogInfo(msg='Launching ldlidar_node for Mini Pupper (LD06)'),
         ldlidar_container,
         ldlidar_lifecycle_mgr,

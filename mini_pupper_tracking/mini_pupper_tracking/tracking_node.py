@@ -52,6 +52,7 @@ class TrackingNode(Node):
         # Flask Parameter Declaration
         self.declare_parameter('flask.image_display_size', 1280)
         self.declare_parameter('flask.frame_rate', 15)
+        self.declare_parameter('flask.port', 5000)
         self.declare_parameter('flask.auto_open_browser', True)
 
         self.subscription = self.create_subscription(

@@ -294,3 +294,6 @@ CATKIN_IGNORE
 # End of https://www.toptal.com/developers/gitignore/api/c,c++,python,ros
 .lgd-nfy*
 log/
+
+# Auto-generated ROS 1 CAD-export files
+*.trans

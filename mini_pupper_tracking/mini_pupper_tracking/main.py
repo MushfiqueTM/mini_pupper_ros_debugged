@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -32,29 +32,30 @@ def main(args=None):
         'image_display_size': node.get_parameter('flask.image_display_size').value,
         'frame_rate': node.get_parameter('flask.frame_rate').value
     }
+    flask_port = node.get_parameter('flask.port').value
     auto_open_browser = node.get_parameter('flask.auto_open_browser').value
 
     # Start Flask app
-    app = create_flask_app(node, flask_config)
+    app = create_flask_app(node, flask_config, port=flask_port)
 
     # Auto-open browser
     def open_browser_delayed():
         time.sleep(1)  # Wait for Flask to be ready
         if auto_open_browser:
             try:
-                webbrowser.open("http://localhost:5000")
+                webbrowser.open(f"http://localhost:{flask_port}")
             except Exception as e:
                 print(f"Could not open browser: {e}")
         else:
             node.get_logger().info(
-                "Auto-open browser is disabled. Visit http://localhost:5000 to view the stream."
+                f"Auto-open browser is disabled. Visit http://localhost:{flask_port} to view the stream."
             )
 
     Thread(target=open_browser_delayed, daemon=True).start()
 
     # Run Flask in background
     flask_thread = Thread(target=lambda: app.run(
-        host="0.0.0.0", port=5000,
+        host="0.0.0.0", port=flask_port,
         debug=False, use_reloader=False, threaded=True), daemon=True)
     flask_thread.start()
 

@@ -118,7 +118,7 @@ def generate_launch_description():
             '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU',
         ],
         remappings=[
-            ('/lidar/scan', '/scan'),
+            ('/lidar/scan', '/ldlidar_node/scan'),
         ],
         parameters=[{'use_sim_time': True}],
         output='screen',
