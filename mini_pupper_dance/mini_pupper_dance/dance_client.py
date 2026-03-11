@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-from mini_pupper_interfaces.srv import DanceCommand
-from mini_pupper_interfaces.srv import PlayMusic, StopMusic
 import rclpy
 from rclpy.node import Node
-
+from mini_pupper_interfaces.srv import DanceCommand
+from mini_pupper_interfaces.srv import PlayMusic, StopMusic
 from .episode import dance_commands
 from .episode import dance_song_file_name
 from .episode import dance_song_start_second

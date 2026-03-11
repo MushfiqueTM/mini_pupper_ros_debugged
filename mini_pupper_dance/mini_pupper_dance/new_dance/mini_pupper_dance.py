@@ -14,14 +14,13 @@
 # limitations under the License.
 #
 
-from mini_pupper_interfaces.msg import Command
-from mini_pupper_interfaces.msg import Matrix3x4
 import rclpy
 from rclpy.node import Node
 from stanford_controller.Config import Configuration
-
-from .createDanceActionListSample import MovementLib
 from .MovementScheme import MovementScheme
+from .createDanceActionListSample import MovementLib
+from mini_pupper_interfaces.msg import Command
+from mini_pupper_interfaces.msg import Matrix3x4
 
 
 class MiniPupperDanceNode(Node):

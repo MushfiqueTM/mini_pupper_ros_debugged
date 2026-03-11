@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-import time
-
-from geometry_msgs.msg import Pose
-from geometry_msgs.msg import Twist
-from mini_pupper_interfaces.srv import DanceCommand
 import rclpy
 from rclpy.node import Node
-
+from mini_pupper_interfaces.srv import DanceCommand
+from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Pose
+import time
 from .math_operations import quaternion_from_euler
 
 

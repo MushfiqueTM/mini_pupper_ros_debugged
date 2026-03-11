@@ -23,7 +23,7 @@ def _launch_nodes(context, *args, **kwargs):
                         # remap the node’s internal topic "robot_command"
                         ('robot_command', f'/robot{i}/robot_command'),
                     ],
-                ),
+                )
             )
     else:
         nodes.append(
@@ -32,7 +32,7 @@ def _launch_nodes(context, *args, **kwargs):
                 executable='mini_pupper_dance',
                 name='mini_pupper_dance',
                 output='screen',
-            ),
+            )
         )
 
     return nodes
