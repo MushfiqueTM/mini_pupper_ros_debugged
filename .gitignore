@@ -297,3 +297,7 @@ log/
 
 # Auto-generated ROS 1 CAD-export files
 *.trans
+
+# colcon build outputs
+install/
+.pytest_cache/
